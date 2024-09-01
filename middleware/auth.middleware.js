@@ -1,19 +1,17 @@
 const jwt = require("jsonwebtoken");
 
 module.exports.requireAuth = (req, res, next) => {
-  const auth = req.headers["authorization"];
-  const token = auth && auth.split(" ")[1];
-  if(token){
-    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-      if(err){
-        console.log(err.message);
-        res.sendStatus(403);
-      } else {
-        req.id = decodedToken.id;
-        next();
-      }
-    });
-  } else {
-    res.sendStatus(401);
-  }
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  if (!authHeader) return res.sendStatus(401);
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedToken) => {
+    console.log("Verify token");
+    if (err) res.sendStatus(403);
+    console.log(decodedToken);
+    req.id = decodedToken.id;
+    req.role = decodedToken.role; 
+    console.log("verified" );
+    next();
+  });
+
 }

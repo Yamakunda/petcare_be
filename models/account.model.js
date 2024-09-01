@@ -34,17 +34,16 @@ const accountSchema = new mongoose.Schema(
       default: null,
     },
     token: {
-      type: String,
-      default: generate.generateRandomString(20),
+      type: [String],
+      default: [],
     },
     avatar: {
       type: String,
-      default: null,
+      default: "https://res.cloudinary.com/dzm879qpm/image/upload/v1724509563/DefautAvatar_iayxio.png",
     },
-
-    role_id: {
+    role: {
       type: String,
-      default: null,
+      default: "user",
     },
     deleted: {
       type: Boolean,
@@ -54,11 +53,13 @@ const accountSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+  },{
+    timestamps: true,
   }
 );
 
 accountSchema.pre("save", async function (next) {
-  const salt = await bcrypt.genSalt();
+  const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
@@ -70,9 +71,13 @@ accountSchema.statics.login = async function (email, password) {
     if (auth) {
       return account;
     }
-    throw Error("Incorrect password");
+    else{
+    console.log("Incorrect password");
+    }
   }
-  throw Error("Incorrect email");
+  else{
+    console.log("Incorrect email");
+  }
 }
 const Account = mongoose.model("Account", accountSchema, "accounts");
 

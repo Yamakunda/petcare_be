@@ -13,6 +13,7 @@ const systemConfig = require("./config/system");
 const routeAdmin = require("./routes/admin/index.route");
 const route = require("./routes/client/index.route");
 
+
 database.connect();
 
 const app = express();
@@ -20,7 +21,7 @@ app.use(express.json());
 const port = process.env.PORT;
 
 app.use(cors({ origin: 'http://localhost:3000',credentials: true, }));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 // Flash
 // app.use(cookieParser("JHGJKLKLGFLJK"));
