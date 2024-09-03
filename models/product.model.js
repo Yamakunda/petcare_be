@@ -10,6 +10,10 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    brand: {
+      type: String,
+      required: true,
+    },
     category: {
       type: String,
       required: true,
@@ -17,6 +21,11 @@ const productSchema = new mongoose.Schema(
     price: {
       type: Number,
       required: true,
+    },
+    rating: {
+      type: Number,
+      required: true,
+      default: 5,
     },
     discount: {
       type: String,
