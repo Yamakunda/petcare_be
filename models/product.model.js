@@ -13,6 +13,7 @@ const productSchema = new mongoose.Schema(
     brand: {
       type: String,
       required: true,
+      default: "Không có thương hiệu",
     },
     category: {
       type: String,
