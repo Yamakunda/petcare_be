@@ -34,9 +34,7 @@ module.exports.login = async (req, res) => {
       httpOnly: true,
       maxage: 7 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'None'
     });
-    res.status(200).send({ jwt: access_token });
-    console.log(access_token);
-    console.log(account.role);
+    res.status(200).send({ jwt: access_token, role: account.role });
   } catch (error) {
     res.status(400).send(error);
   }
