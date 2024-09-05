@@ -37,11 +37,11 @@ module.exports.getProductById = async (req, res) => {
 module.exports.updateProduct = async (req, res) => {
   console.log("Update Product");
   const { id } = req.params;
-  const { name, stock, category, price, discount, description, status, image } = req.body;
+  // const { name, stock, category, price, discount, description, status, image } = req.body;
   try {
     const product = await Product.findByIdAndUpdate(
       id,
-      { name, stock, category, price, discount, description, status, image },
+      req.body,
       { new: true, runValidators: true }
     );
     if (!product) {
