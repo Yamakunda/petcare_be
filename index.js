@@ -1,9 +1,7 @@
 const express = require("express");
-const path = require("path");
-const bodyParser = require("body-parser");
+var bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-const flash = require("express-flash");
 const moment = require("moment");
 const cors = require("cors");
 require("dotenv").config();
@@ -17,8 +15,10 @@ const route = require("./routes/client/index.route");
 database.connect();
 
 const app = express();
-app.use(express.json());
+// app.use(express.json());
 const port = process.env.PORT;
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 app.use(cors({ origin: 'http://localhost:3000',credentials: true, }));
 app.use(cookieParser());

@@ -1,12 +1,19 @@
 const Product = require("../models/product.model");
+const cloudinary = require("../config/cloudinary");
 module.exports.addProduct = async (req, res) => {
-  console.log(req.body);
-  // const { name, stock, brand, category, price, discount, description, status, image } = req.body;
-  // const discountReal = discount || "0%";
-  // const descriptionReal = description || "Không có mô tả";
-  // const imageReal = image || ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"];
-  // const statusReal = status || "Hoạt động";
   try {
+    const result = await cloudinary.uploader.upload(req.body.image, {
+      folder: "products",
+      width: 300,
+      crop: "scale"
+  })
+    req.body.image = [result.secure_url];
+    console.log(result);
+  } catch (error) {
+    res.status(400).json({error});
+  }
+  try {
+
     const product = await Product.create(req.body);
     res.status(201).json({ product });
     console.log(product);
@@ -35,10 +42,16 @@ module.exports.getProductById = async (req, res) => {
   }
 };
 module.exports.updateProduct = async (req, res) => {
-  console.log("Update Product");
   const { id } = req.params;
-  // const { name, stock, category, price, discount, description, status, image } = req.body;
   try {
+    const result = await cloudinary.uploader.upload(req.body.image, {
+      folder: "products",
+      width: 300,
+      crop: "scale"
+  })
+    console.log(result);
+    req.body.image = [result.secure_url];
+
     const product = await Product.findByIdAndUpdate(
       id,
       req.body,
