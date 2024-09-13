@@ -6,11 +6,11 @@ module.exports.addProduct = async (req, res) => {
       folder: "products",
       width: 300,
       crop: "scale"
-  })
-    req.body.image = [result.secure_url];
+    })
+    req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
     console.log(result);
   } catch (error) {
-    res.status(400).json({error});
+    res.status(400).json({ error });
   }
   try {
 
@@ -43,14 +43,20 @@ module.exports.getProductById = async (req, res) => {
 };
 module.exports.updateProduct = async (req, res) => {
   const { id } = req.params;
+  
+  const currentProduct = await Product.findById(id);
+  const ImgId = currentProduct.image.public_id;
+  if (ImgId != "null") {
+    await cloudinary.uploader.destroy(ImgId);
+  }
   try {
     const result = await cloudinary.uploader.upload(req.body.image, {
       folder: "products",
       width: 300,
       crop: "scale"
-  })
+    })
     console.log(result);
-    req.body.image = [result.secure_url];
+    req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
 
     const product = await Product.findByIdAndUpdate(
       id,
@@ -67,17 +73,24 @@ module.exports.updateProduct = async (req, res) => {
 };
 module.exports.deleteProduct = async (req, res) => {
   try {
-      const productId = req.params.id;
-      
-      // Find the product by ID and delete it
-      const product = await Product.findByIdAndDelete(productId);
-      
-      if (!product) {
-          return res.status(404).json({ message: 'Product not found' });
-      }
-      
-      res.status(200).json({ message: 'Product deleted successfully' });
+    const productId = req.params.id;
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    //retrieve current image ID
+    const imgId = product.image.public_id;
+    if (imgId != "null") {
+      await cloudinary.uploader.destroy(imgId);
+    }
+    // Find the product by ID and delete it
+
+    const rmproduct = await Product.findByIdAndDelete(productId);
+
+    res.status(200).json({ message: 'Product deleted successfully' });
   } catch (error) {
-      res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

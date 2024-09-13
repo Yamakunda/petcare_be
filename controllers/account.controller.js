@@ -3,24 +3,42 @@ const cloudinary = require("../config/cloudinary");
 
 module.exports.updateAccount = async (req, res) => {
   const { id } = req.params;
+
+  const currentAccount = await Account.findById(id);
+  const ImgId = currentAccount.avatar.public_id;
+  if (ImgId != "null") {
+    await cloudinary.uploader.destroy(ImgId);
+  }
   try {
-    const result = await cloudinary.uploader.upload(req.body.avatar, {
+    if(req.body.avatar.public_id == ""){
+    const result = await cloudinary.uploader.upload(req.body.avatar.url, {
       folder: "accounts",
       // width: 300,
       // crop: "scale"
   })
     console.log(result);
-    req.body.avatar = result.secure_url;
-  } catch (error) {
-    res.status(400).json( { error:"Upload Fail"});
+    req.body.avatar = {public_id: result.public_id, url: result.secure_url};
   }
-
-  try {
     const account = await Account.findByIdAndUpdate(
       id,
       req.body,
       { new: true, runValidators: true }
     );
+    console.log(account);
+    res.status(200).json({ account });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+}
+module.exports.deleteAccount = async (req, res) => {
+  const { id } = req.params;
+  const currentAccount = await Account.findById(id);
+  const ImgId = currentAccount.avatar.public_id;
+  if (ImgId != "null") {
+    await cloudinary.uploader.destroy(ImgId);
+  }
+  try {
+    const account = await Account.findByIdAndDelete(id);
     if (!account) {
       return res.status(404).json({ error: "Account not found" });
     }
@@ -28,4 +46,4 @@ module.exports.updateAccount = async (req, res) => {
   } catch (error) {
     res.status(400).json({ error });
   }
-}
+};
