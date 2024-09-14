@@ -2,18 +2,16 @@ const Product = require("../models/product.model");
 const cloudinary = require("../config/cloudinary");
 module.exports.addProduct = async (req, res) => {
   try {
-    if(req.body.image != ""){
-      console.log(req.body.image);
+    if(req.body.image.public_id == "null"){
       const result = await cloudinary.uploader.upload(req.body.image.url, {
         folder: "products",
         width: 300,
         crop: "scale"
       })
     req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
-    console.log(result);
     }
     else{
-      req.body.image = { public_id: "null", url: "https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png" };
+      req.body.image = { public_id: ["null"], url: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"] };
     }
     console.log(req.body);
     const product = await Product.create(req.body);
@@ -51,15 +49,15 @@ module.exports.updateProduct = async (req, res) => {
     await cloudinary.uploader.destroy(ImgId);
   }
   try {
-    if(req.body.image.public_id == ""){
+    if(req.body.image.public_id == "null"){
     const result = await cloudinary.uploader.upload(req.body.image.url, {
       folder: "products",
       width: 300,
       crop: "scale"
     })
-    console.log(result);
     req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
     }
+    console.log(req.body);
     const product = await Product.findByIdAndUpdate(
       id,
       req.body,
