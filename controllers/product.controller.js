@@ -2,18 +2,20 @@ const Product = require("../models/product.model");
 const cloudinary = require("../config/cloudinary");
 module.exports.addProduct = async (req, res) => {
   try {
-    const result = await cloudinary.uploader.upload(req.body.image.url, {
-      folder: "products",
-      width: 300,
-      crop: "scale"
-    })
+    if(req.body.image != ""){
+      console.log(req.body.image);
+      const result = await cloudinary.uploader.upload(req.body.image.url, {
+        folder: "products",
+        width: 300,
+        crop: "scale"
+      })
     req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
     console.log(result);
-  } catch (error) {
-    res.status(400).json({ error });
-  }
-  try {
-
+    }
+    else{
+      req.body.image = { public_id: "null", url: "https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png" };
+    }
+    console.log(req.body);
     const product = await Product.create(req.body);
     res.status(201).json({ product });
     console.log(product);
