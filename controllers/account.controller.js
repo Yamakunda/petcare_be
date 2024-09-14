@@ -1,5 +1,22 @@
 const Account = require("../models/account.model");
 const cloudinary = require("../config/cloudinary");
+const Cart = require("../models/cart.model");
+module.exports.createAccount = async (req, res) => {
+  const { email, password, role } = req.body;
+  try {
+    if (role == "user") {
+      const account = await Account.create({ email, password, role });
+      const cart = await Cart.create({ user_id: account._id });
+      res.status(201).send(account);
+    }
+    else {
+      const account = await Account.create({ email, password });
+      res.status(201).send(account);
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
 
 module.exports.updateAccount = async (req, res) => {
   const { id } = req.params;

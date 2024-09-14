@@ -2,7 +2,7 @@ const Product = require("../models/product.model");
 const cloudinary = require("../config/cloudinary");
 module.exports.addProduct = async (req, res) => {
   try {
-    const result = await cloudinary.uploader.upload(req.body.image, {
+    const result = await cloudinary.uploader.upload(req.body.image.url, {
       folder: "products",
       width: 300,
       crop: "scale"
@@ -43,21 +43,21 @@ module.exports.getProductById = async (req, res) => {
 };
 module.exports.updateProduct = async (req, res) => {
   const { id } = req.params;
-  
   const currentProduct = await Product.findById(id);
   const ImgId = currentProduct.image.public_id;
   if (ImgId != "null") {
     await cloudinary.uploader.destroy(ImgId);
   }
   try {
-    const result = await cloudinary.uploader.upload(req.body.image, {
+    if(req.body.image.public_id == ""){
+    const result = await cloudinary.uploader.upload(req.body.image.url, {
       folder: "products",
       width: 300,
       crop: "scale"
     })
     console.log(result);
     req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
-
+    }
     const product = await Product.findByIdAndUpdate(
       id,
       req.body,
