@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const voucherSchema = new mongoose.Schema(
   {
-    employee_id: {
+    id: {
       type: String,
       required: true,
       default: "1",
@@ -25,12 +25,12 @@ const voucherSchema = new mongoose.Schema(
     beginDate: {
       type: Date,
       required: true,
-      default: Date.now, // Default to the current date and time
+      // default: Date.now, // Default to the current date and time
     },
     endDate: {
       type: Date,
       required: true,
-      default: () => new Date(+new Date() + 7*24*60*60*1000), // Default to one week from now
+      // default: () => new Date(+new Date() + 7*24*60*60*1000), // Default to one week from now
     },
     code: {
       type: String,

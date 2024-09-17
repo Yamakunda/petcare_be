@@ -36,11 +36,12 @@ const petSchema = new mongoose.Schema(
     vaccinated: {
       type: Boolean,
       required: true,
+      default: false,
     },
     image: {
       type: [String],
       required: true,
-      default: []
+      default: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"]
     },
   },
   {
