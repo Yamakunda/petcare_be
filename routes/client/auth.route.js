@@ -9,7 +9,6 @@ router.post("/signup", controller.signup);
 router.post("/login", controller.login);
 router.get("/logout", controller.logout);
 router.get("/refreshtoken", controller.handleRefreshToken);
-
 router.get("/test", verifyJWT.requireAuth,verify_middleware.verifyRole("user"), (req,res)=>{res.send("Hello")});
 router.get("/post",auth_middleware.requireAuth, controller.post);
 //xai verifyJWT.requireAuth,verify_middleware.verifyRole cho route nao can xac thuc

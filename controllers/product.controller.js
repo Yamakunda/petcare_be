@@ -1,12 +1,19 @@
 const Product = require("../models/product.model");
+const cloudinary = require("../config/cloudinary");
 module.exports.addProduct = async (req, res) => {
-  console.log(req.body);
-  // const { name, stock, brand, category, price, discount, description, status, image } = req.body;
-  // const discountReal = discount || "0%";
-  // const descriptionReal = description || "Không có mô tả";
-  // const imageReal = image || ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"];
-  // const statusReal = status || "Hoạt động";
   try {
+    if(req.body.image.public_id == "null"){
+      const result = await cloudinary.uploader.upload(req.body.image.url, {
+        folder: "products",
+        width: 300,
+        crop: "scale"
+      })
+    req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
+    }
+    else{
+      req.body.image = { public_id: ["null"], url: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"] };
+    }
+    console.log(req.body);
     const product = await Product.create(req.body);
     res.status(201).json({ product });
     console.log(product);
@@ -35,10 +42,22 @@ module.exports.getProductById = async (req, res) => {
   }
 };
 module.exports.updateProduct = async (req, res) => {
-  console.log("Update Product");
   const { id } = req.params;
-  // const { name, stock, category, price, discount, description, status, image } = req.body;
+  const currentProduct = await Product.findById(id);
+  const ImgId = currentProduct.image.public_id;
+  if (ImgId != "null") {
+    await cloudinary.uploader.destroy(ImgId);
+  }
   try {
+    if(req.body.image.public_id == "null"){
+    const result = await cloudinary.uploader.upload(req.body.image.url, {
+      folder: "products",
+      width: 300,
+      crop: "scale"
+    })
+    req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
+    }
+    console.log(req.body);
     const product = await Product.findByIdAndUpdate(
       id,
       req.body,
@@ -54,17 +73,24 @@ module.exports.updateProduct = async (req, res) => {
 };
 module.exports.deleteProduct = async (req, res) => {
   try {
-      const productId = req.params.id;
-      
-      // Find the product by ID and delete it
-      const product = await Product.findByIdAndDelete(productId);
-      
-      if (!product) {
-          return res.status(404).json({ message: 'Product not found' });
-      }
-      
-      res.status(200).json({ message: 'Product deleted successfully' });
+    const productId = req.params.id;
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    //retrieve current image ID
+    const imgId = product.image.public_id;
+    if (imgId != "null") {
+      await cloudinary.uploader.destroy(imgId);
+    }
+    // Find the product by ID and delete it
+
+    const rmproduct = await Product.findByIdAndDelete(productId);
+
+    res.status(200).json({ message: 'Product deleted successfully' });
   } catch (error) {
-      res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

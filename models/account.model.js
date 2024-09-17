@@ -38,8 +38,16 @@ const accountSchema = new mongoose.Schema(
       default: [],
     },
     avatar: {
-      type: String,
-      default: "https://res.cloudinary.com/dzm879qpm/image/upload/v1724509563/DefautAvatar_iayxio.png",
+      public_id: {
+          type: String,
+          required: true,
+          default: "null"
+      },
+      url: {
+          type: String,
+          required: true,
+          default: "https://res.cloudinary.com/dzm879qpm/image/upload/v1724509563/DefautAvatar_iayxio.png"
+      }
     },
     role: {
       type: String,

@@ -5,12 +5,12 @@ module.exports.requireAuth = (req, res, next) => {
   if (!authHeader) return res.sendStatus(401);
   const token = authHeader.split(" ")[1];
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedToken) => {
-    console.log("Verify token");
+    // console.log("Verify token");
     if (err) res.sendStatus(403);
-    console.log(decodedToken);
+    // console.log(decodedToken);
     req.id = decodedToken.id;
     req.role = decodedToken.role; 
-    console.log("verified" );
+    // console.log("verified" );
     next();
   });
 

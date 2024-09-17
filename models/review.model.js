@@ -5,14 +5,19 @@ const reviewSchema = new mongoose.Schema(
     user_id: {
       type: String,
       required: true,
+      default: ""
     },
     product_id: {
       type: String,
       required: true,
+      default: ""
     },
     rating: {
       type: Number,
       required: true,
+      min: 1,
+      max: 5,
+      default: 5
     },
     image: {
       type: [String],
@@ -22,6 +27,7 @@ const reviewSchema = new mongoose.Schema(
     content: {
       type: String,
       required: true,
+      default: ""
     },
   },
   {

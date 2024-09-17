@@ -36,6 +36,7 @@ const cartSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields
+    default: [], // Set default value for product_list
   }
 );
 
