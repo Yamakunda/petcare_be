@@ -4,4 +4,5 @@ const router = express.Router();
 router.post("/create", controller.createAccount);
 router.put("/:id", controller.updateAccount); 
 router.delete("/:id", controller.deleteAccount);
+router.post("/changepass/:id", controller.changePassword);
 module.exports = router;

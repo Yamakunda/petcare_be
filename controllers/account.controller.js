@@ -1,6 +1,7 @@
 const Account = require("../models/account.model");
 const cloudinary = require("../config/cloudinary");
 const Cart = require("../models/cart.model");
+const bcrypt = require("bcrypt");
 module.exports.createAccount = async (req, res) => {
   const { email, password, role } = req.body;
   try {
@@ -20,14 +21,13 @@ module.exports.createAccount = async (req, res) => {
 
 module.exports.updateAccount = async (req, res) => {
   const { id } = req.params;
-
   const currentAccount = await Account.findById(id);
   const ImgId = currentAccount.avatar.public_id;
   if (ImgId != "null") {
     await cloudinary.uploader.destroy(ImgId);
   }
   try {
-    if(req.body.avatar.public_id == ""){
+    if(req.body.avatar.public_id == "null"){
     const result = await cloudinary.uploader.upload(req.body.avatar.url, {
       folder: "accounts",
       // width: 300,
@@ -41,7 +41,7 @@ module.exports.updateAccount = async (req, res) => {
       req.body,
       { new: true, runValidators: true }
     );
-    console.log(account);
+
     res.status(200).json({ account });
   } catch (error) {
     res.status(400).json({ error });
@@ -60,6 +60,26 @@ module.exports.deleteAccount = async (req, res) => {
       return res.status(404).json({ error: "Account not found" });
     }
     res.status(200).json({ account });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+};
+module.exports.changePassword = async (req, res) => {
+  const { id } = req.params;
+  const { oldpassword, newpassword } = req.body;
+  try {
+    console.log("Change password");
+    const account = await Account.findById(id);
+    const check = await bcrypt.compare(oldpassword, account.password);
+    if(!check){
+      console.log("Old password is incorrect");
+      res.status(400).json({ error: "Old password is incorrect" });
+    } else {
+      account.password = newpassword;
+      await account.save();
+      console.log("Change password successfully");
+      res.status(200).json({ account });
+    }
   } catch (error) {
     res.status(400).json({ error });
   }

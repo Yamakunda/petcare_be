@@ -60,6 +60,5 @@ module.exports.logout = async (req, res) => {
 }
 module.exports.post = async (req, res) => {
   const account = await Account.findOne({ _id: req.id });
-  console.log(account);
   res.json(account);
 }

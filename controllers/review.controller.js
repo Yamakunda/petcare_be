@@ -16,7 +16,7 @@ module.exports.addReview = async (req, res) => {
 module.exports.getReviewById = async (req, res) => {
     const { id } = req.params;
     try {
-        const review = await Review.findById(id);               
+    const review = await Review.find({ product_id: id });        
         if (!review) {
             return res.status(404).json({ error: "Review not found" });
         }
