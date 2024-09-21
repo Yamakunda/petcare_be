@@ -47,7 +47,7 @@ module.exports.handleRefreshToken = async (req, res) => {
     if (error) { res.sendStatus(403); }
     const account = await Account.findOne({ _id: decodedToken.id });
     const access_token = jwt.sign({ id: account._id, role: account.role }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "30m"
+      expiresIn: "60m"
     })
     res.status(200).send({ jwt: access_token });
   });
@@ -60,5 +60,6 @@ module.exports.logout = async (req, res) => {
 }
 module.exports.post = async (req, res) => {
   const account = await Account.findOne({ _id: req.id });
+  console.log(account);
   res.json(account);
 }
