@@ -36,6 +36,18 @@ const adoptSchema = new mongoose.Schema(
       required: true,
       default: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"]
     },
+    message: {
+      type: String,
+      required: true,
+    },
+    employeeName: {
+      type: String,
+      required: true,
+    },
+    employeeId: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields

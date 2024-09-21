@@ -5,6 +5,10 @@ const petSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    pet_id: {
+      type: String,
+      required: true,
+    },
     gender: {
       type: String,
       required: true,
@@ -41,7 +45,7 @@ const petSchema = new mongoose.Schema(
     image: {
       type: [String],
       required: true,
-      default: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"]
+      default: []
     },
   },
   {

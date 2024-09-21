@@ -8,6 +8,7 @@ const adoptRoutes = require("./adopt.route");
 const orderRoutes = require("./order.route");
 
 
+
 module.exports = (app) => {
   const PATH_ADMIN = systemConfig.prefixAdmin;
   app.use("/product", productRoutes);  

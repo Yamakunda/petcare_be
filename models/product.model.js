@@ -44,9 +44,16 @@ const productSchema = new mongoose.Schema(
       default: "Hoạt động",
     },
     image: {
-      type: [String],
-      required: true,
-      default: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"],
+      public_id: {
+        type: [String],
+        required: true,
+        default: ["null"],
+      },
+      url: {
+        type: [String],
+        required: true,
+        default: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"],
+      }
     },
   },
   {
