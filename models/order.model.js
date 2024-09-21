@@ -5,6 +5,10 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    phone_number: {
+      type: String,
+      required: true,
+    },
     order_date: {
       type: Date,
       required: true,

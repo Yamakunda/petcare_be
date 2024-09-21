@@ -1,24 +1,11 @@
 const mongoose = require("mongoose");
-
-const appointmentSchema = new mongoose.Schema(
+const adoptSchema = new mongoose.Schema(
   {
     userName: {
       type: String,
       required: true,
     },
-    user_id: {
-      type: String,
-      required: true,
-    },
-    doctorName: {
-      type: String,
-      required: true,
-    },
-    doctor_id: {
-      type: String,
-      required: true,
-    },
-    phone: {
+    phoneNumber: {
       type: String,
       required: true,
     },
@@ -26,37 +13,47 @@ const appointmentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    date: {
-      type: Date,
-      required: true,
-    },
-    time: {
+    petName: {
       type: String,
       required: true,
     },
-    time: {
-      type: String,
-      required: true,
-    },
-    service: {
-      type: String,
-      required: true,
-    },
-    status: {
-      type: String,
-      required: true,
-    },
-    note: {
+    petId: {
       type: String,
       required: true,
     },
 
+    adoptStatus: {
+      type: String,
+      required: true,
+    },
+    resquestDay: {
+      type: Date,
+      required: true,
+    },
+
+    image: {
+      type: [String],
+      required: true,
+      default: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"]
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+    employeeName: {
+      type: String,
+      required: true,
+    },
+    employeeId: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields
   }
 );
 
-const Appointment = mongoose.model("Appointment", appointmentSchema, "appointments");
+const Adopt = mongoose.model("Adopt", adoptSchema, "adopts");
 
-module.exports = Appointment ;
+module.exports = Adopt ;

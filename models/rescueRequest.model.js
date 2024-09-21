@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 
 const rescueRequestSchema = new mongoose.Schema(
   {
-    user_id: {
+    user_name: {
       type: String,
       required: true,
       default: "anonymous",
     },
-    ReceiveTime: {
+    RequestTime: {
       type: Date,
       required: true,
     },
@@ -16,9 +16,16 @@ const rescueRequestSchema = new mongoose.Schema(
       required: true,
     },
     image: {
-      type: [String],
-      required: true,
-      default: []
+      public_id: {
+        type: [String],
+        required: true,
+        default: ["null"],
+      },
+      url: {
+        type: [String],
+        required: true,
+        default: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"],
+      }
     },
     location: {
       type: String,
@@ -29,6 +36,14 @@ const rescueRequestSchema = new mongoose.Schema(
       required: true,
     },
     requestStatus: {
+      type: String,
+      required: true,
+    },
+    employeeName: {
+      type: String,
+      required: true,
+    },
+    employeeId: {
       type: String,
       required: true,
     },
