@@ -10,6 +10,7 @@ const rescueRequestSchema = new mongoose.Schema(
     RequestTime: {
       type: Date,
       required: true,
+      default: Date.now,
     },
     message: {
       type: String,
@@ -38,14 +39,17 @@ const rescueRequestSchema = new mongoose.Schema(
     requestStatus: {
       type: String,
       required: true,
+      default: "Chờ xác nhận",
     },
     employeeName: {
       type: String,
       required: true,
+      default: "chưa",
     },
     employeeId: {
       type: String,
       required: true,
+      default: "chưa",
     },
 
   },
