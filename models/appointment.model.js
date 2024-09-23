@@ -34,7 +34,11 @@ const appointmentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    time: {
+    petAge: {
+      type: String,
+      required: true,
+    },
+    petGender: {
       type: String,
       required: true,
     },
