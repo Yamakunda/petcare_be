@@ -6,10 +6,10 @@ module.exports.addProduct = async (req, res) => {
     if(req.body.image.public_id == "null"){
       const result = await cloudinary.uploader.upload(req.body.image.url, {
         folder: "products",
-        width: 300,
-        crop: "scale"
+        // width: 300,
+        // crop: "scale"
       })
-    req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
+      req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
     }
     else{
       req.body.image = { public_id: ["null"], url: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"] };
@@ -56,10 +56,9 @@ module.exports.updateProduct = async (req, res) => {
       // width: 300,
       // crop: "scale"
     })
-    console.log(result);
     req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
     }
-    console.log(req.body);
+
     const product = await Product.findByIdAndUpdate(
       id,
       req.body,
@@ -82,7 +81,7 @@ module.exports.deleteProduct = async (req, res) => {
     }
     //retrieve current image ID
     const imgId = product.image.public_id;
-    if (imgId[0] != "null") {
+    if (imgId[0] != "null" && imgId[0] != "") {
       await cloudinary.uploader.destroy(imgId);
     }
     // Find the product by ID and delete it

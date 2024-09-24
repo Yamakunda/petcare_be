@@ -4,8 +4,8 @@ const Otp = require("../models/otp.model");
 const transporter = nodemailer.createTransport({
   service: 'gmail', 
   auth: {
-    user: 'candikool0@gmail.com', 
-    pass: 'son150603'   
+    user: process.env.EMAIL,
+    pass: process.env.GMAIL_PASSWORD 
   }
 });
 
@@ -27,7 +27,7 @@ module.exports.createOTP = async (req, res) => {
     const otp = await Otp.create({ email, job });
     
     const mailOptions = {
-      from: 'candikool0@gmail.com', // Your email address
+      from: process.env.EMAIL, // Your email address
       to: email,
       subject: 'Mã OTP của BKPetCare',
       text: `Mã OTP của bạn là ${otp.otp}. Đừng chia sẻ mã này với bất kỳ ai khác. Mã này sẽ hết hạn sau 3 phút.`
