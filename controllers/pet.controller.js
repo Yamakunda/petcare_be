@@ -20,9 +20,9 @@ module.exports.addPet = async (req, res) => {
     else{
       req.body.image = { public_id: ["null"], url: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"] };
     }
-    console.log(req.body.image);
-
+    console.log(req.body);
     const pet = await Pet.create(req.body);
+    console.log(2);
     res.status(201).json({ pet });
     console.log(pet);
   } catch (error) {
