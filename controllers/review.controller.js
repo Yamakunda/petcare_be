@@ -43,3 +43,20 @@ module.exports.updateReview = async (req, res) => {
         res.status(400).json({ error });
     }
 }
+module.exports.deleteReview = async (req, res) => {
+    const { reviewId } = req.params;
+    try {
+        const review = await Review.findByIdAndDelete(reviewId);
+        if (!review) {
+            return res.status(404).json({ error: "Review not found" });
+        }
+        const reviews = await Review.find({product_id: review.product_id });
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        const averageRating = totalRating / reviews.length;
+        await Product.findByIdAndUpdate(review.product_id, { rating: averageRating });
+
+        res.status(200).json({ message: 'Review deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+}
