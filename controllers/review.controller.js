@@ -7,11 +7,6 @@ module.exports.addReview = async (req, res) => {
         const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
         const averageRating = totalRating / reviews.length;
         const product = await Product.findByIdAndUpdate(req.body.product_id, { rating: averageRating }, { new: true, runValidators: true });
-        const review = await Review.create(req.body);
-        const reviews = await Review.find({product_id: req.body.product_id });
-        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-        const averageRating = totalRating / reviews.length;
-        const product = await Product.findByIdAndUpdate(req.body.product_id, { rating: averageRating }, { new: true, runValidators: true });
         res.status(201).json({ review });
     } catch (error) {
         res.status(400).json({ error });
