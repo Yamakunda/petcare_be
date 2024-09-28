@@ -15,15 +15,15 @@ module.exports.updateCart = async (req, res) => {
     let product_list = cart.product_list;
     const index = product_list.findIndex((product) => product.product_id === product_id);
     if (index !== -1) {
-      if (quantity === "0") {
-        product_list.splice(index, 1);
-      }
-      else {
+      // if (quantity === "0") {
+      //   product_list.splice(index, 1);
+      // }
+      // else {
         // Product exists in the cart, update the quantity
-        product_list[index].quantity = quantity;
+        product_list[index].quantity =+ quantity;
         product_list[index].price = product.price;
         product_list[index].discount_price = product.price * (1 - parseFloat(product.discount) / 100);
-      }
+      // }
     } else {
       // Product does not exist in the cart, add it
       if (quantity === "0") {
