@@ -55,7 +55,7 @@ module.exports.updatePet = async (req, res) => {
   const currentPet = await Pet.findById(id);
   const ImgId = currentPet.image.public_id;
   try {
-    if (ImgId[0] != "null" || !currentProduct) {
+    if (ImgId[0] != "null" || !currentPet) {
       await cloudinary.uploader.destroy(ImgId);
     }
     if(req.body.image.public_id == "null"){

@@ -8,11 +8,11 @@ module.exports.createAccount = async (req, res) => {
     if (role == "user") {
       const account = await Account.create({ email, password, role });
       const cart = await Cart.create({ user_id: account._id });
-      res.status(201).send(account);
+      res.status(200).send(account);
     }
     else {
       const account = await Account.create({ email, password });
-      res.status(201).send(account);
+      res.status(200).send(account);
     }
   } catch (error) {
     res.status(400).send(error);
@@ -59,6 +59,7 @@ module.exports.deleteAccount = async (req, res) => {
     if (!account) {
       return res.status(404).json({ error: "Account not found" });
     }
+    const cart = await Cart.findOneAndDelete({ user_id: id });
     res.status(200).json({ account });
   } catch (error) {
     res.status(400).json({ error });

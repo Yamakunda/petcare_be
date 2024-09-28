@@ -2,16 +2,16 @@ const Review = require("../models/review.model");
 const Product = require("../models/product.model");
 module.exports.addReview = async (req, res) => {
     try {
-        console.log(1);
         const review = await Review.create(req.body);
-        console.log(2);
         const reviews = await Review.find({product_id: req.body.product_id });
-        console.log(3);
         const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-        console.log(4);
         const averageRating = totalRating / reviews.length;
         const product = await Product.findByIdAndUpdate(req.body.product_id, { rating: averageRating }, { new: true, runValidators: true });
-        console.log(5);
+        const review = await Review.create(req.body);
+        const reviews = await Review.find({product_id: req.body.product_id });
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        const averageRating = totalRating / reviews.length;
+        const product = await Product.findByIdAndUpdate(req.body.product_id, { rating: averageRating }, { new: true, runValidators: true });
         res.status(201).json({ review });
     } catch (error) {
         res.status(400).json({ error });
@@ -46,5 +46,22 @@ module.exports.updateReview = async (req, res) => {
         res.status(200).json({ review });
     } catch (error) {
         res.status(400).json({ error });
+    }
+}
+module.exports.deleteReview = async (req, res) => {
+    const { reviewId } = req.params;
+    try {
+        const review = await Review.findByIdAndDelete(reviewId);
+        if (!review) {
+            return res.status(404).json({ error: "Review not found" });
+        }
+        const reviews = await Review.find({product_id: review.product_id });
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        const averageRating = totalRating / reviews.length;
+        await Product.findByIdAndUpdate(review.product_id, { rating: averageRating });
+
+        res.status(200).json({ message: 'Review deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error });
     }
 }

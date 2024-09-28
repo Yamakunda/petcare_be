@@ -47,3 +47,15 @@ module.exports.updateCart = async (req, res) => {
     res.status(500).json({ error: "Update Cart error" });
   }
 };
+module.exports.getCart = async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const cart = await Cart.findOne({ user_id });
+    if (!cart) {
+      return res.status(404).json({ error: "Cart not found" });
+    }
+    res.status(200).json({ cart });
+  } catch (error) {
+    res.status(500).json({ error: "Get Cart error" });
+  }
+}
