@@ -1,10 +1,11 @@
 const nodemailer = require('nodemailer');
 const Otp = require("../models/otp.model");
+const Account = require("../models/account.model");
 
 const transporter = nodemailer.createTransport({
   service: 'gmail', 
   auth: {
-    user: process.env.EMAIL,
+    user: process.env.GMAIL,
     pass: process.env.GMAIL_PASSWORD 
   }
 });
@@ -15,19 +16,21 @@ module.exports.createOTP = async (req, res) => {
     if(!email) {
       return res.status(400).json({ error: "Email is required" });
     }
+    const account = await Account.findOne({ email: email });
+    if (account) {
+      return res.status(404).json({ error: "Email existed" });
+    }
     const lastotp = await Otp.findOne({ email: email, job: job }).sort({ createDate: -1 });
-
     if (lastotp) {
       const now = new Date();
       if (now < lastotp.expireDate) {
         return res.status(400).json({ error: "Please wait for 3 minutes before requesting another OTP" });
-      }
+      } else {}
       await Otp.findByIdAndDelete(lastotp._id);
     }
     const otp = await Otp.create({ email, job });
-    
     const mailOptions = {
-      from: process.env.EMAIL, // Your email address
+      from: process.env.GMAIL, // Your email address
       to: email,
       subject: 'Mã OTP của BKPetCare',
       text: `Mã OTP của bạn là ${otp.otp}. Đừng chia sẻ mã này với bất kỳ ai khác. Mã này sẽ hết hạn sau 3 phút.`
@@ -39,8 +42,28 @@ module.exports.createOTP = async (req, res) => {
       }
       res.status(201).json({ message: 'OTP sent successfully', otp });
     });
-
+    console.log(5);
   } catch (error) {
     res.status(400).send(error);
   }
 };
+module.exports.verifyOTP = async (req, res) => {
+  const { email, otp, job } = req.body;
+  try {
+    const otpData = await Otp.findOne({ email, job }).sort({ createDate: -1 });
+    if (!otpData) {
+      return res.status(404).json({ error: "OTP not found" });
+    }
+    const now = new Date();
+    if (now > otpData.expireDate) {
+      return res.status(400).json({ error: "OTP has expired" });
+    }
+    if (otpData.otp === otp) {
+      return res.status(200).json({ message: "OTP verified successfully" });
+    } else {
+      return res.status(400).json({ error: "OTP is incorrect" });
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  };
+}
