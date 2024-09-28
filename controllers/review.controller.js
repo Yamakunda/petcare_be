@@ -2,16 +2,16 @@ const Review = require("../models/review.model");
 const Product = require("../models/product.model");
 module.exports.addReview = async (req, res) => {
     try {
-        console(1);
+        console.log(1);
         const review = await Review.create(req.body);
-        console(2);
+        console.log(2);
         const reviews = await Review.find({product_id: req.body.product_id });
-        console(3);
+        console.log(3);
         const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-        console(4);
+        console.log(4);
         const averageRating = totalRating / reviews.length;
         const product = await Product.findByIdAndUpdate(req.body.product_id, { rating: averageRating }, { new: true, runValidators: true });
-        console(5);
+        console.log(5);
         res.status(201).json({ review });
     } catch (error) {
         res.status(400).json({ error });
