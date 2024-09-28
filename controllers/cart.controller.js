@@ -1,6 +1,6 @@
 const Cart = require("../models/cart.model");
 const Product = require("../models/product.model");
-module.exports.updateCart = async (req, res) => {
+module.exports.addProductToCart = async (req, res) => {
   const { user_id, product_id, quantity } = req.body;
   console.log(req.body);
   try {
