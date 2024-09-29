@@ -31,6 +31,7 @@ module.exports.addProductToCart = async (req, res) => {
       } else {
         product_list.push({
           product_id: product_id,
+          product_name: product.name,
           product_image: product.image.url[0], // Assuming product.image is the correct field
           quantity: quantity,
           price: product.price,
@@ -57,5 +58,25 @@ module.exports.getCart = async (req, res) => {
     res.status(200).json({ cart });
   } catch (error) {
     res.status(500).json({ error: "Get Cart error" });
+  }
+}
+module.exports.deleteProductFromCart = async (req, res) => {
+  const { user_id, product_id } = req.body;
+  try {
+    const cart = await Cart.findOne({ user_id });
+    if (!cart) {
+      return res.status(404).json({ error: "Cart not found" });
+    }
+    let product_list = cart.product_list;
+    const index = product_list.findIndex((product) => product.product_id === product_id);
+    if (index === -1) {
+      return res.status(404).json({ error: "Product not found in cart" });
+    }
+    product_list.splice(index, 1);
+    cart.product_list = product_list;
+    await cart.save();
+    res.status(200).json({ cart });
+  } catch (error) {
+    res.status(500).json({ error: "Delete Product from Cart error" });
   }
 }
