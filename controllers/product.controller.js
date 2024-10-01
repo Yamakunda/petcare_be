@@ -10,7 +10,10 @@ module.exports.addProduct = async (req, res) => {
         // crop: "scale"
       })
       req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
-    }
+    }   
+
+
+    
     else{
       req.body.image = { public_id: ["null"], url: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"] };
     }
