@@ -50,6 +50,49 @@ const petSchema = new mongoose.Schema(
         default: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"],
       }
     },
+    // THONG TIN NGUOI NHAN NUOI
+    userName: {
+      type: String,
+      required: true,
+      default: "anonymous",
+    },
+    phoneNumber: {
+      type: String,
+      required: true,
+      default: "anonymous",
+    },
+    address: {
+      type: String,
+      required: true,
+      default: "anonymous",
+    },
+    resquestDay: {
+      type: Date,
+      required: true,
+    },
+    requestStatus: {
+      type: String,
+      required: true,
+      default: "Chờ xác nhận",
+    },
+    message: {
+      type: String,
+      required: true,
+      default: "anonymous",
+    },
+    
+    employeeName : {
+      type: String,
+      required: true,
+      default: "anonymous",
+    },
+    employeeId : {
+      type: String,
+      required: true,
+      default: "anonymous",
+    },
+
+
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields
