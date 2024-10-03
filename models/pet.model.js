@@ -28,10 +28,12 @@ const petSchema = new mongoose.Schema(
     adoptStatus: {
       type: String,
       required: true,
+      default: "Chưa có chủ",
     },
     recieveDay: {
       type: Date,
       required: true,
+      default: Date.now,
     },
     vaccinated: {
       type: Boolean,
@@ -69,6 +71,12 @@ const petSchema = new mongoose.Schema(
     resquestDay: {
       type: Date,
       required: true,
+      default: Date.now,
+    },
+    adoptDay: {
+      type: Date,
+      required: true,
+      default: Date.now,
     },
     requestStatus: {
       type: String,
@@ -78,19 +86,26 @@ const petSchema = new mongoose.Schema(
     message: {
       type: String,
       required: true,
-      default: "anonymous",
+      default: "Chưa có lời nhắn",
     },
     
     employeeName : {
       type: String,
       required: true,
-      default: "anonymous",
+      default: "Chưa được xử lý",
     },
     employeeId : {
       type: String,
       required: true,
       default: "anonymous",
     },
+    recieveDay: {
+      type: Date,
+      required: true,
+      default: Date.now,
+    },
+
+
 
 
   },
