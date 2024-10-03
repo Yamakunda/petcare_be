@@ -20,7 +20,7 @@ module.exports.addProductToCart = async (req, res) => {
       // }
       // else {
         // Product exists in the cart, update the quantity
-        product_list[index].quantity =+ quantity;
+        product_list[index].quantity += quantity;
         product_list[index].price = product.price;
         product_list[index].discount_price = product.price * (1 - parseFloat(product.discount) / 100);
       // }
@@ -46,6 +46,28 @@ module.exports.addProductToCart = async (req, res) => {
     res.status(200).json({ cart });
   } catch (error) {
     res.status(500).json({ error: "Update Cart error" });
+  }
+};
+module.exports.adjustProductQuantity = async (req, res) => {
+  const { user_id, product_id, quantity } = req.body;
+  try {
+    const cart = await Cart.findOne({ user_id });
+    if (!cart) {
+      return res.status(404).json({ error: "Cart not found" });
+    }
+    let product_list = cart.product_list;
+    const index = product_list.findIndex((product) => product.product_id === product_id);
+    if (index === -1) {
+      return res.status(404).json({ error: "Product not found in cart" });
+    }
+    if (quantity <= 0) {
+      return res.status(400).json({ error: "Quantity must be greater than 0" });
+    }
+    product_list[index].quantity = quantity;
+    await cart.save();
+    res.status(200).json({ cart });
+  } catch (error) {
+    res.status(500).json({ error: "Adjust Product Quantity error" });
   }
 };
 module.exports.getCart = async (req, res) => {
