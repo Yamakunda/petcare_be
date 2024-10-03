@@ -17,7 +17,6 @@ module.exports.addProduct = async (req, res) => {
     else{
       req.body.image = { public_id: ["null"], url: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"] };
     }
-    console.log(req.body);
     const product = await Product.create(req.body);
     res.status(201).json({ product });
     console.log(product);

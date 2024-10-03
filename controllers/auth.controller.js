@@ -25,7 +25,7 @@ module.exports.login = async (req, res) => {
   const account = await Account.login(email, password);
   try {
     const access_token = jwt.sign({ id: account._id, role: account.role }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "30m"
+      expiresIn: "1d"
     })
     const refresh_token = jwt.sign({ id: account._id }, process.env.REFRESH_TOKEN_SECRET, {
       expiresIn: "7d"
@@ -34,7 +34,7 @@ module.exports.login = async (req, res) => {
       httpOnly: true,
       maxage: 7 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'None'
     });
-    res.status(200).send({ jwt: access_token, role: account.role });
+    res.status(200).send({ jwt: access_token, role: account.role, id: account._id });
   } catch (error) {
     res.status(400).send(error);
   }

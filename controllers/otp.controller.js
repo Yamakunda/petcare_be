@@ -52,15 +52,19 @@ module.exports.verifyOTP = async (req, res) => {
   try {
     const otpData = await Otp.findOne({ email, job }).sort({ createDate: -1 });
     if (!otpData) {
+      console.log("OTP not found");
       return res.status(404).json({ error: "OTP not found" });
     }
     const now = new Date();
     if (now > otpData.expireDate) {
+      console.log("OTP has expired");
       return res.status(400).json({ error: "OTP has expired" });
     }
     if (otpData.otp === otp) {
+      console.log("OTP verified successfully");
       return res.status(200).json({ message: "OTP verified successfully" });
     } else {
+      console.log("OTP is incorrect");
       return res.status(400).json({ error: "OTP is incorrect" });
     }
   } catch (error) {

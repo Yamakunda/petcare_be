@@ -2,6 +2,15 @@ const Account = require("../models/account.model");
 const cloudinary = require("../config/cloudinary");
 const Cart = require("../models/cart.model");
 const bcrypt = require("bcrypt");
+const nodemailer = require('nodemailer');
+const generate = require("../helpers/generate");
+const transporter = nodemailer.createTransport({
+  service: 'gmail', 
+  auth: {
+    user: process.env.GMAIL,
+    pass: process.env.GMAIL_PASSWORD 
+  }
+});
 module.exports.createAccount = async (req, res) => {
   const { email, password, role } = req.body;
   try {
@@ -85,3 +94,30 @@ module.exports.changePassword = async (req, res) => {
     res.status(400).json({ error });
   }
 };
+module.exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const account = await Account.findOne({ email });
+    if (!account) {
+      return res.status(404).json({ error: "Account not found" });
+    }
+    const newpassword = generate.generateRandomNumber(8);
+    account.password = newpassword;
+    await account.save();
+    const mailOptions = {
+      from: process.env.GMAIL, // Your email address
+      to: email,
+      subject: 'Mật khẩu mới cho BKPetCare',
+      text: `Mật khẩu mới của bạn là ${newpassword}. Đừng chia sẻ mật khẩu này với bất kỳ ai khác.`
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ error: 'Error sending password', error });
+      }
+    });
+    console.log("Sent new password to your email");
+    res.status(200).json({message:"Sent new password to your email"});
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+}
