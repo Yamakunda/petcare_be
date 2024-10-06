@@ -51,6 +51,7 @@ module.exports.getPetById = async (req, res) => {
 };
 module.exports.updatePet = async (req, res) => {
   console.log("Update Pet");
+  console.log(req.body);
   const { id } = req.params;
   const currentPet = await Pet.findById(id);
   const ImgId = currentPet.image.public_id;

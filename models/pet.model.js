@@ -71,6 +71,7 @@ const petSchema = new mongoose.Schema(
     resquestDay: {
       type: Date,
       required: true,
+      
       default: Date.now,
     },
     adoptDay: {
@@ -103,6 +104,18 @@ const petSchema = new mongoose.Schema(
       type: Date,
       required: true,
       default: Date.now,
+    },
+
+    arriveDay: {
+      type: Date,
+      required: true,
+      default: Date.now,
+    },
+
+    method: {
+      type: String,
+      required: true,
+      default: "Nhận trực tiếp",
     },
 
 
