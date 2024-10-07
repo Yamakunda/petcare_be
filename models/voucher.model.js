@@ -2,11 +2,6 @@ const mongoose = require("mongoose");
 
 const voucherSchema = new mongoose.Schema(
   {
-    id: {
-      type: String,
-      required: true,
-      default: "1",
-    },
     name: {
       type: String,
       required: true,
@@ -20,42 +15,59 @@ const voucherSchema = new mongoose.Schema(
     UsedTime: {
       type: Number,
       required: true,
-      default: "1",
+      default: "0",
     },
     beginDate: {
       type: Date,
       required: true,
-      // default: Date.now, // Default to the current date and time
+      default: Date.now, // Default to the current date and time
     },
     endDate: {
       type: Date,
       required: true,
-      // default: () => new Date(+new Date() + 7*24*60*60*1000), // Default to one week from now
+      default: () => new Date(+new Date() + 7*24*60*60*1000), // Default to one week from now
     },
     code: {
       type: String,
       required: true,
-      default: "1",
+      default: "",
     },
     discount_type: {
       type: String,
       required: true,
-      default: "1",
+      default: "phantram",
     },
     discount_value: {
-      type: String,
-      required: true,
-      default: "1",
+      value: {
+        type: Number,
+        required: true,
+        default: "0",
+      },
+      min_require: {
+        type: Number,
+        required: true,
+        default: "0",
+      },
+      max_discount: {
+        type: Number,
+        required: true,
+        default: "0",
+      },
     },
     description: {
       type: String,
       required: true,
-      default: "1",
+      default: "",
+    },
+    employee_id: {
+      type: String,
+      required: true,
+      default: "",
     },
     status: {
       type: String,
       required: true,
-      default: "1",
+      default: "",
     },
   },
   {

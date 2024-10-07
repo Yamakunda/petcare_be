@@ -74,6 +74,15 @@ module.exports.getCart = async (req, res) => {
   const { user_id } = req.params;
   try {
     const cart = await Cart.findOne({ user_id });
+    const product_list = await Promise.all(cart.product_list.map(async (item) => {
+      const product = await Product.findById(item.product_id);
+      return {
+        ...item._doc,
+        product_name: product ? product.name : null,
+        product_image: product ? product.image.url[0] : null
+      };
+    }));
+    cart.product_list = product_list;
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
     }

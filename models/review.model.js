@@ -7,16 +7,6 @@ const reviewSchema = new mongoose.Schema(
       required: true,
       default: ""
     },
-    user_name: {
-      type: String,
-      required: true,
-      default: ""
-    },
-    user_avatar: {
-      type: String,
-      required: true,
-      default: ""
-    },
     product_id: {
       type: String,
       required: true,

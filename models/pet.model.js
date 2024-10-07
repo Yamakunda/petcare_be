@@ -88,7 +88,6 @@ const petSchema = new mongoose.Schema(
       required: true,
       default: "Chưa có lời nhắn",
     },
-    
     employeeName : {
       type: String,
       required: true,
