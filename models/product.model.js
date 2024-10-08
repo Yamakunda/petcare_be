@@ -38,6 +38,11 @@ const productSchema = new mongoose.Schema(
       required: true,
       default: "0%",
     },
+    discount_price: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     description: {
       type: String,
       required: true,
@@ -65,7 +70,41 @@ const productSchema = new mongoose.Schema(
     timestamps: true, // Adds createdAt and updatedAt fields
   }
 );
+// Pre-save hook to calculate discount_price
 
+// Function to calculate discount_price
+function calculateDiscountPrice() {
+  const discountPercentage = parseFloat(this.discount) / 100;
+  this.discount_price = this.price - (this.price * discountPercentage);
+  console.log(`Calculated discount_price: ${this.discount_price}`); // Debug log
+}
+
+// Pre-save hook to calculate discount_price
+productSchema.pre('save', function(next) {
+  calculateDiscountPrice.call(this);
+  next();
+});
+
+// Pre-update hooks to calculate discount_price
+productSchema.pre('findOneAndUpdate', function(next) {
+  const update = this.getUpdate();
+  if (update.price || update.discount) {
+    const discountPercentage = parseFloat(update.discount) / 100;
+    update.discount_price = update.price - (update.price * discountPercentage);
+    console.log(`Calculated discount_price: ${update.discount_price}`); // Debug log
+  }
+  next();
+});
+
+productSchema.pre('updateOne', function(next) {
+  const update = this.getUpdate();
+  if (update.price || update.discount) {
+    const discountPercentage = parseFloat(update.discount) / 100;
+    update.discount_price = update.price - (update.price * discountPercentage);
+    console.log(`Calculated discount_price: ${update.discount_price}`); // Debug log
+  }
+  next();
+});
 const Product = mongoose.model("Product", productSchema, "products");
 
 module.exports = Product;
