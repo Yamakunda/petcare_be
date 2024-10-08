@@ -7,4 +7,5 @@ router.get("/list", controller.getAllVouchers);
 router.put("/:id", controller.updateVoucher); 
 router.get("/:id", controller.getVouchertById);
 router.delete("/:id", controller.deleteVoucher);
+router.get("/code/:code", controller.getVoucherByCode);
 module.exports = router;

@@ -62,6 +62,19 @@ module.exports.getVouchertById = async (req, res) => {
       res.status(400).json({ error });
     }
   };
+module.exports.getVoucherByCode = async (req, res) => {
+    const { code } = req.params;
+    try {
+      const voucher = await Voucher.findOne({ code });
+        if (!voucher) {
+            return res.status(404).json({ error: "Voucher not found" });
+        }
+        res.status(200).json({ voucher });
+    }
+    catch (error) {
+        res.status(400).json({ error });
+    }
+};
 
 
 

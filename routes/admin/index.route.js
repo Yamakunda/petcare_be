@@ -6,7 +6,7 @@ const rescueRequestRoutes = require("./rescueRequest.route");
 const appointmentRoutes = require("./appointment.route");
 const adoptRoutes = require("./adopt.route");
 const orderRoutes = require("./order.route");
-
+const dashboardRoutes = require("./dashboard.route");
 
 
 module.exports = (app) => {
@@ -18,5 +18,6 @@ module.exports = (app) => {
   app.use("/appointment", appointmentRoutes);
   app.use("/adopt", adoptRoutes);
   app.use("/order", orderRoutes);
+  app.use("/dashboard", dashboardRoutes);
   
 };
