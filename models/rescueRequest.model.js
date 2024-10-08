@@ -39,7 +39,7 @@ const rescueRequestSchema = new mongoose.Schema(
     requestStatus: {
       type: String,
       required: true,
-      default: "Chờ xác nhận",
+      default: "Chưa xử lý",
     },
     employeeName: {
       type: String,
