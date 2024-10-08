@@ -40,14 +40,6 @@ const orderSchema = new mongoose.Schema(
           type: String,
           required: true,
         },
-        product_image:{
-          type: String,
-          required: true,
-        },
-        quantity: {
-          type: Number,
-          required: true,
-        },
         price: {
           // Giá của 1 sản phẩm chưa giảm giá
           type: Number,
