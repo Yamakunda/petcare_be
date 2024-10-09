@@ -11,7 +11,7 @@ module.exports.addOrder = async (req, res) => {
   }
 }
 module.exports.cartToOrder = async (req, res) => {
-  // API body: {user_id, product_list: [{product_id, product_image, quantity, price, discount_price}]',
+  // API body: {user_id, product_list: [{product_id, quantity, price, discount_price}]',
   // payment_method, voucher_id, total_price}
   try {
     const account = await Account.findById(req.body.user_id);

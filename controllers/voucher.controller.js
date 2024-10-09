@@ -14,12 +14,10 @@ exports.getAllVouchers = async (req, res) => {
 // Create a new voucher
 exports.createVoucher = async (req, res) => {
     try {
-        const voucher = new Voucher(req.body);
-
-        const savedVoucher = await voucher.save();
-        res.status(201).json(savedVoucher);
+        const voucher = await Voucher.create(req.body);
+        res.status(201).json(voucher);
     } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: error.message });
     }
 };
 
