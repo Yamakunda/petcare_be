@@ -49,7 +49,12 @@ const orderSchema = new mongoose.Schema(
           // Giá của 1 sản phẩm đã giảm giá
           type: Number,
           required: true,
-        }
+        },
+        quantity: {
+          
+          type: Number,
+          required: true,
+        },
       },
     ],
     voucher_id: {
