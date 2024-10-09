@@ -36,9 +36,9 @@ const petSchema = new mongoose.Schema(
       default: Date.now,
     },
     vaccinated: {
-      type: Boolean,
+      type: String,
       required: true,
-      default: false,
+      default: "Đã tiêm phòng",
     },
     image: {
       public_id: {
