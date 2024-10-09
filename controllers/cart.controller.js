@@ -35,7 +35,7 @@ module.exports.addProductToCart = async (req, res) => {
           product_image: product.image.url[0], // Assuming product.image is the correct field
           quantity: quantity,
           price: product.price,
-          discount_price: product.price * (1 - parseFloat(product.discount) / 100),
+          discount_price: product.discount_price,
         });
       }
     }
