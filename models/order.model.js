@@ -16,7 +16,7 @@ const orderSchema = new mongoose.Schema(
     delivery_date: {
       type: Date,
       required: true,
-      default: null,
+      default: Date.now(),
     },
     order_status: {
       type: String,
@@ -33,6 +33,7 @@ const orderSchema = new mongoose.Schema(
     employee_id: {
       type: String,
       required: true,
+      default: "Chưa có",
     },
     product_list: [
       {
