@@ -14,6 +14,7 @@ module.exports.cartToOrder = async (req, res) => {
   // API body: {user_id, product_list: [{product_id, quantity, price, discount_price}]',
   // payment_method, voucher_id, total_price}
   try {
+    console.log(req.body);
     const account = await Account.findById(req.body.user_id);
     if (!account) {
       return res.status(404).json({ error: "Account not found" });
@@ -26,9 +27,9 @@ module.exports.cartToOrder = async (req, res) => {
       order_email: account.email,
       product_list: req.body.product_list,
       order_date: new Date(),
-      delivery_date: null,
+      delivery_date: new Date(),//Chỉnh sửa khi biết ngày giao hàng
       payment_method: req.body.payment_method,
-      employee_id: null,
+      employee_id: "Chưa có",
       voucher_id: req.body.voucher_id,
       total_price: req.body.total_price
     });
