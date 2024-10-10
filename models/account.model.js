@@ -17,6 +17,10 @@ const accountSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    passwordChangedAt: {
+      type: Date,
+      default: Date.now,
+    },
     phone: {
       type: String,
       default: null,

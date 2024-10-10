@@ -1,17 +1,23 @@
 const jwt = require("jsonwebtoken");
-
-module.exports.requireAuth = (req, res, next) => {
+const Account = require('../models/account.model');
+module.exports.requireAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization;
   if (!authHeader) return res.sendStatus(401);
   const token = authHeader.split(" ")[1];
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedToken) => {
-    // console.log("Verify token");
-    if (err) res.sendStatus(403);
-    // console.log(decodedToken);
-    req.id = decodedToken.id;
-    req.role = decodedToken.role; 
-    // console.log("verified" );
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const account = await Account.findById(decoded.id);
+    if (!account) {
+      return res.status(401).send('Unauthorized');
+    }
+    if (decoded.passwordChangedAt !== account.passwordChangedAt.toISOString()) {
+      return res.status(401).send('Token is invalid due to password change');
+    }
+    req.id = decoded.id;
+    req.role = decoded.role; 
     next();
-  });
+  } catch (error) {
+    res.status(401).send('Unauthorized');
+  }
 
 }
