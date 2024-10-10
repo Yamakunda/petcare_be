@@ -1,5 +1,7 @@
 const Order = require("../models/order.model");
+const Product = require("../models/product.model");
 const Account = require("../models/account.model");
+const Cart = require("../models/cart.model");
 module.exports.addOrder = async (req, res) => {
   console.log(req.body);
   try {
@@ -39,10 +41,34 @@ module.exports.cartToOrder = async (req, res) => {
     res.status(400).json({ error });
   }
 };
-module.exports.getListOrder = async (req, res) => {
+module.exports.getAllOrder = async (req, res) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find().sort({ order_status: 1 });
     res.status(200).json({ orders });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+};
+module.exports.getListOrder = async (req, res) => {
+  const {id} = req.params;
+  try {
+    const orders = await Order.find({user_id: id});
+    const ordersWithProductDetails = await Promise.all(orders.map(async (order) => {
+      const productListWithDetails = await Promise.all(order.product_list.map(async (item) => {
+        const product = await Product.findById(item.product_id);
+        return {
+          ...item._doc,
+          product_name: product ? product.name : null,
+          product_image: product ? product.image.url[0] : null
+        };
+      }));
+      return {
+        ...order._doc,
+        product_list: productListWithDetails
+      };
+    }));    
+
+    res.status(200).json({ orders: ordersWithProductDetails });
   } catch (error) {
     res.status(400).json({ error });
   }
@@ -90,5 +116,37 @@ module.exports.deleteOrder = async (req, res) => {
       res.status(200).json({ message: 'Order deleted successfully' });
   } catch (error) {
       res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+module.exports.rebuyOrder = async (req, res) => {
+  console.log("Rebuy Order");
+  const { id } = req.params;
+  try {
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    const product_list = order.product_list;
+    const cart = await Cart.findOne({ user_id: order.user_id });
+    if (!cart) {
+      return res.status(404).json({ error: "Cart not found" });
+    }
+    for (const item of product_list) {
+      const product = await Product.findById(item.product_id);
+      if (!product) {
+        continue; // Skip to the next product if not found
+      }
+      const cartItem = {
+        product_id: item.product_id,
+        quantity: item.quantity,
+        price: product.price,
+        discount_price: product.discount_price
+      };
+      cart.product_list.push(cartItem);
+    }
+    await cart.save();
+    res.status(200).json({ cart });
+  } catch (error) {
+    res.status(400).json({ error });
   }
 };

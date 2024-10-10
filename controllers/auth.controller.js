@@ -1,4 +1,3 @@
-const express = require("express");
 const Account = require("../models/account.model");
 const jwt = require("jsonwebtoken");
 
@@ -24,16 +23,13 @@ module.exports.login = async (req, res) => {
   const { email, password } = req.body;
   const account = await Account.login(email, password);
   try {
-    const access_token = jwt.sign({ id: account._id, role: account.role }, process.env.ACCESS_TOKEN_SECRET, {
+    const access_token = jwt.sign({ id: account._id, role: account.role,passwordChangedAt: account.passwordChangedAt }, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "1d"
     })
-    const refresh_token = jwt.sign({ id: account._id }, process.env.REFRESH_TOKEN_SECRET, {
+    const refresh_token = jwt.sign({ id: account._id,role: account.role,passwordChangedAt: account.passwordChangedAt }, process.env.REFRESH_TOKEN_SECRET, {
       expiresIn: "7d"
     })
-    res.cookie("jwt", refresh_token, {
-      httpOnly: true,
-      maxage: 7 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'None'
-    });
+    res.cookie("jwt", refresh_token, {httpOnly: true,maxage: 7 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'None'});
     res.status(200).send({ jwt: access_token, role: account.role, id: account._id });
   } catch (error) {
     res.status(400).send(error);

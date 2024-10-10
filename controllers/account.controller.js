@@ -86,6 +86,7 @@ module.exports.changePassword = async (req, res) => {
       res.status(400).json({ error: "Old password is incorrect" });
     } else {
       account.password = newpassword;
+      account.passwordChangedAt = Date.now();
       await account.save();
       console.log("Change password successfully");
       res.status(200).json({ account });
