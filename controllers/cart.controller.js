@@ -22,7 +22,7 @@ module.exports.addProductToCart = async (req, res) => {
         // Product exists in the cart, update the quantity
         product_list[index].quantity += quantity;
         product_list[index].price = product.price;
-        product_list[index].discount_price = product.price * (1 - parseFloat(product.discount) / 100);
+        product_list[index].discount_price = product.discount_price;
       // }
     } else {
       // Product does not exist in the cart, add it
@@ -82,10 +82,18 @@ module.exports.getCart = async (req, res) => {
         product_image: product ? product.image.url[0] : null
       };
     }));
-    cart.product_list = product_list;
+    
+    
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
     }
+    const newCart = {
+      ...cart._doc,
+      product_list: product_list
+    }
+    console.log(newCart);
+    res.status(200).json({cart: newCart});
+
     res.status(200).json({ cart });
   } catch (error) {
     res.status(500).json({ error: "Get Cart error" });
@@ -111,3 +119,17 @@ module.exports.deleteProductFromCart = async (req, res) => {
     res.status(500).json({ error: "Delete Product from Cart error" });
   }
 }
+module.exports.deleteAllItemsFromCart = async (req, res) => {
+  const { user_id } = req.params; // Use req.params to get user_id from the URL
+  try {
+    const cart = await Cart.findOne({ user_id });
+    if (!cart) {
+      return res.status(404).json({ error: "Cart not found" });
+    }
+    cart.product_list = []; // Clear the product list
+    await cart.save(); // Save the empty cart
+    res.status(200).json({ message: "All items deleted from cart successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Delete all items from cart error" });
+  }
+};

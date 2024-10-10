@@ -75,7 +75,7 @@ const productSchema = new mongoose.Schema(
 // Function to calculate discount_price
 function calculateDiscountPrice() {
   const discountPercentage = parseFloat(this.discount) / 100;
-  this.discount_price = this.price - (this.price * discountPercentage);
+  this.discount_price = Math.round(this.price - (this.price * discountPercentage));
   console.log(`Calculated discount_price: ${this.discount_price}`); // Debug log
 }
 
@@ -90,7 +90,7 @@ productSchema.pre('findOneAndUpdate', function(next) {
   const update = this.getUpdate();
   if (update.price || update.discount) {
     const discountPercentage = parseFloat(update.discount) / 100;
-    update.discount_price = update.price - (update.price * discountPercentage);
+    update.discount_price = Math.round(update.price - (update.price * discountPercentage));
     console.log(`Calculated discount_price: ${update.discount_price}`); // Debug log
   }
   next();
@@ -100,7 +100,7 @@ productSchema.pre('updateOne', function(next) {
   const update = this.getUpdate();
   if (update.price || update.discount) {
     const discountPercentage = parseFloat(update.discount) / 100;
-    update.discount_price = update.price - (update.price * discountPercentage);
+    update.discount_price = Math.round(update.price - (update.price * discountPercentage));
     console.log(`Calculated discount_price: ${update.discount_price}`); // Debug log
   }
   next();
