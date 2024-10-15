@@ -19,35 +19,47 @@ module.exports.signup = async (req, res) => {
   }
 };
 module.exports.login = async (req, res) => {
-  const cookie = req.cookies;
   const { email, password } = req.body;
-  const account = await Account.login(email, password);
   try {
-    const access_token = jwt.sign({ id: account._id, role: account.role,passwordChangedAt: account.passwordChangedAt }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "1d"
-    })
-    const refresh_token = jwt.sign({ id: account._id,role: account.role,passwordChangedAt: account.passwordChangedAt }, process.env.REFRESH_TOKEN_SECRET, {
-      expiresIn: "7d"
-    })
-    res.cookie("jwt", refresh_token, {httpOnly: true,maxage: 7 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'None'});
+    const account = await Account.login(email, password);
+    const access_token = jwt.sign(
+      { id: account._id, role: account.role, passwordChangedAt: account.passwordChangedAt },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: '1d' }
+    );
+    const refresh_token = jwt.sign(
+      { id: account._id, role: account.role, passwordChangedAt: account.passwordChangedAt },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: '7d' }
+    );
+    res.cookie('jwt', refresh_token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: 'None'
+    });
     res.status(200).send({ jwt: access_token, role: account.role, id: account._id });
   } catch (error) {
     res.status(400).send(error);
   }
-}
+};
+
 module.exports.handleRefreshToken = async (req, res) => {
   const cookie = req.cookies;
   if (!cookie?.jwt) return res.sendStatus(401);
   const refresh_token = cookie.jwt;
   jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET, async (error, decodedToken) => {
-    if (error) { res.sendStatus(403); }
+    if (error) return res.sendStatus(403);
     const account = await Account.findOne({ _id: decodedToken.id });
-    const access_token = jwt.sign({ id: account._id, role: account.role }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "60m"
-    })
+    if (!account) return res.sendStatus(403);
+    const access_token = jwt.sign(
+      { id: account._id, role: account.role, passwordChangedAt: account.passwordChangedAt },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: '60m' }
+    );
     res.status(200).send({ jwt: access_token });
   });
-}
+};
 module.exports.logout = async (req, res) => {
   const cookie = req.cookies;
   if (!cookie?.jwt) return res.sendStatus(204);
@@ -56,6 +68,5 @@ module.exports.logout = async (req, res) => {
 }
 module.exports.post = async (req, res) => {
   const account = await Account.findOne({ _id: req.id });
-  console.log(account);
-  res.json(account);
+  res.status(200).json(account);
 }

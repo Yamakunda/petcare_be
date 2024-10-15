@@ -85,9 +85,12 @@ module.exports.changePassword = async (req, res) => {
       console.log("Old password is incorrect");
       res.status(400).json({ error: "Old password is incorrect" });
     } else {
-      account.password = newpassword;
-      account.passwordChangedAt = Date.now();
-      await account.save();
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newpassword, salt);
+      account = await Account.findByIdAndUpdate(id, {
+        password: hashedPassword,
+        passwordChangedAt: Date.now()
+      });
       console.log("Change password successfully");
       res.status(200).json({ account });
     }
@@ -103,8 +106,12 @@ module.exports.forgotPassword = async (req, res) => {
       return res.status(404).json({ error: "Account not found" });
     }
     const newpassword = generate.generateRandomNumber(8);
-    account.password = newpassword;
-    await account.save();
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newpassword, salt);
+    account = await Account.findByIdAndUpdate(id, {
+      password: hashedPassword,
+      passwordChangedAt: Date.now()
+    });
     const mailOptions = {
       from: process.env.GMAIL, // Your email address
       to: email,
