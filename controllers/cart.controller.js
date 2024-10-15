@@ -93,8 +93,6 @@ module.exports.getCart = async (req, res) => {
     }
     console.log(newCart);
     res.status(200).json({cart: newCart});
-
-    res.status(200).json({ cart });
   } catch (error) {
     res.status(500).json({ error: "Get Cart error" });
   }
@@ -131,5 +129,25 @@ module.exports.deleteAllItemsFromCart = async (req, res) => {
     res.status(200).json({ message: "All items deleted from cart successfully" });
   } catch (error) {
     res.status(500).json({ error: "Delete all items from cart error" });
+  }
+};
+module.exports.selectProduct = async (req, res) => {
+  const { user_id, product_id, selected } = req.body;
+  try {
+    const cart = await Cart.findOne({ user_id });
+    if (!cart) {
+      return res.status(404).json({ error: "Cart not found" });
+    }
+    let product_list = cart.product_list;
+    const index = product_list.findIndex((product) => product.product_id === product_id);
+    if (index === -1) {
+      return res.status(404).json({ error: "Product not found in cart" });
+    }
+    product_list[index].selected = selected;
+    cart.product_list = product_list;
+    await cart.save();
+    res.status(200).json({ cart });
+  } catch (error) {
+    res.status(500).json({ error: "Select Product error" });
   }
 };

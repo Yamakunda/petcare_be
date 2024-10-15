@@ -25,10 +25,14 @@ const cartSchema = new mongoose.Schema(
           // Giá của 1 sản phẩm đã giảm giá
           type: Number,
           required: true,
-        }
+        },
+        selected: {
+          type: Boolean,
+          required: true,
+          default: true,
+        },
       },
     ],
-
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields
