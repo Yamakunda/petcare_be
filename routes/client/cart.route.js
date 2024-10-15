@@ -7,4 +7,5 @@ router.delete("/deleteProduct", controller.deleteProductFromCart);
 router.get("/:user_id", controller.getCart);
 router.post("/update", controller.adjustProductQuantity);
 router.post("/delete/:user_id", controller.deleteAllItemsFromCart);
+router.post("/selectProduct", controller.selectProduct);
 module.exports = router;

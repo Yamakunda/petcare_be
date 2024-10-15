@@ -16,6 +16,7 @@ module.exports.cartToOrder = async (req, res) => {
   // API body: {user_id, product_list: [{product_id, quantity, price, discount_price}]',
   // payment_method, voucher_id, total_price}
   try {
+    console.log("cart to order");
     console.log(req.body);
     const account = await Account.findById(req.body.user_id);
     if (!account) {
@@ -35,8 +36,17 @@ module.exports.cartToOrder = async (req, res) => {
       voucher_id: req.body.voucher_id,
       total_price: req.body.total_price
     });
+    const cart = await Cart.findOne({ user_id: req.body.user_id });
+    if (!cart) {
+      return res.status(404).json({ error: "Cart not found" });
+    }
+    // Remove products in order.product_list from cart.product_list
+    const orderProductIds = order.product_list.map(orderItem => orderItem.product_id.toString());
+
+    cart.product_list = cart.product_list.filter(cartItem => !orderProductIds.includes(cartItem.product_id.toString()));
+    await cart.save();
     res.status(201).json({ order });
-    console.log(order);
+
   } catch (error) {
     res.status(400).json({ error });
   }
@@ -50,9 +60,9 @@ module.exports.getAllOrder = async (req, res) => {
   }
 };
 module.exports.getListOrder = async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   try {
-    const orders = await Order.find({user_id: id});
+    const orders = await Order.find({ user_id: id }).sort({ createdAt: -1 });
     const ordersWithProductDetails = await Promise.all(orders.map(async (order) => {
       const productListWithDetails = await Promise.all(order.product_list.map(async (item) => {
         const product = await Product.findById(item.product_id);
@@ -66,7 +76,7 @@ module.exports.getListOrder = async (req, res) => {
         ...order._doc,
         product_list: productListWithDetails
       };
-    }));    
+    }));
 
     res.status(200).json({ orders: ordersWithProductDetails });
   } catch (error) {
@@ -104,18 +114,18 @@ module.exports.updateOrder = async (req, res) => {
 };
 module.exports.deleteOrder = async (req, res) => {
   try {
-      const orderId = req.params.id;
-      
-      // Find the order by ID and delete it
-      const order = await Order.findByIdAndDelete(orderId);
-      
-      if (!order) {
-          return res.status(404).json({ message: 'Order not found' });
-      }
-      
-      res.status(200).json({ message: 'Order deleted successfully' });
+    const orderId = req.params.id;
+
+    // Find the order by ID and delete it
+    const order = await Order.findByIdAndDelete(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    res.status(200).json({ message: 'Order deleted successfully' });
   } catch (error) {
-      res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 module.exports.rebuyOrder = async (req, res) => {
