@@ -1,6 +1,8 @@
 const Product = require("../models/product.model");
 const Review = require("../models/review.model");
 const cloudinary = require("../config/cloudinary");
+const diacritics = require('diacritics');
+
 module.exports.addProduct = async (req, res) => {
   try {
     if(req.body.image.public_id == "null"){
@@ -94,5 +96,18 @@ module.exports.deleteProduct = async (req, res) => {
     res.status(200).json({ message: 'Product deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+module.exports.searchProductByName = async (req, res) => {
+  const { name } = req.params; // Use req.params to get name from the URL
+  try {
+    const normalizedSearchTerm = diacritics.remove(name);
+    const allProducts = await Product.find(); // Retrieve all products
+    const filteredProducts = allProducts.filter(product => 
+      diacritics.remove(product.name).toLowerCase().includes(normalizedSearchTerm.toLowerCase())
+    ).slice(0, 5); // Limit to the first 5 matching products
+    res.status(200).json({ products: filteredProducts });
+  } catch (error) {
+    res.status(400).json({ error });
   }
 };

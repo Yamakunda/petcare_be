@@ -93,8 +93,6 @@ module.exports.getCart = async (req, res) => {
     }
     console.log(newCart);
     res.status(200).json({cart: newCart});
-
-    res.status(200).json({ cart });
   } catch (error) {
     res.status(500).json({ error: "Get Cart error" });
   }
