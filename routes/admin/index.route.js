@@ -8,11 +8,15 @@ const adoptRoutes = require("./adopt.route");
 const orderRoutes = require("./order.route");
 const newsRoutes = require("./news.route");
 const dashboardRoutes = require("./dashboard.route");
-
+const authRoutes = require("./auth.route");
+const accountRoutes = require("./account.route");
+const reviewRoutes = require("./review.route");
+const cartRoutes = require("./cart.route");
+const otpRoutes = require("./otp.route");
 
 module.exports = (app) => {
   const PATH_ADMIN = systemConfig.prefixAdmin;
-  app.use("/product", productRoutes);  
+  app.use("/product", productRoutes);
   app.use("/voucher", voucherRoutes);
   app.use("/pet", petRoutes);
   app.use("/rescueRequest", rescueRequestRoutes);
@@ -21,5 +25,11 @@ module.exports = (app) => {
   app.use("/order", orderRoutes);
   app.use("/news", newsRoutes);
   app.use("/dashboard", dashboardRoutes);
-  
+  app.use("/account", accountRoutes);
+  app.use("/review", reviewRoutes);
+  app.use("/auth", authRoutes);
+  app.use("/cart", cartRoutes);
+  app.use("/otp", otpRoutes);
+  // app.use("/test", test);
+
 };

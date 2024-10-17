@@ -1,30 +1,18 @@
 const Pet = require("../models/pet.model");
 const cloudinary = require("../config/cloudinary");
 module.exports.addPet = async (req, res) => {
-  // const { name, stock, brand, category, price, discount, description, status, image } = req.body;
-  // const discountReal = discount || "0%";
-  // const descriptionReal = description || "Không có mô tả";
-  // const imageReal = image || ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"];
-  // const statusReal = status || "Hoạt động";
   try {
-    console.log(1);
-    console.log(req.body.image.public_id);
     if(req.body.image.public_id == "null"){
       const result = await cloudinary.uploader.upload(req.body.image.url, {
         folder: "pets",
-        // width: 300,
-        // crop: "scale"
       })
       req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
     }
     else{
       req.body.image = { public_id: ["null"], url: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"] };
     }
-    console.log(req.body);
     const pet = await Pet.create(req.body);
-    console.log(2);
     res.status(201).json({ pet });
-    console.log(pet);
   } catch (error) {
     res.status(400).json({ error });
   }
@@ -50,8 +38,6 @@ module.exports.getPetById = async (req, res) => {
   }
 };
 module.exports.updatePet = async (req, res) => {
-  console.log("Update Pet");
-  console.log(req.body);
   const { id } = req.params;
   const currentPet = await Pet.findById(id);
   const ImgId = currentPet.image.public_id;
