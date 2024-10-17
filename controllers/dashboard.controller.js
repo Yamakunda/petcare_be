@@ -4,7 +4,7 @@ const appointment = require("../models/appointment.model");
 const pet = require("../models/pet.model");
 const rescueRequest = require("../models/rescueRequest.model");
 module.exports.getDashboard = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req;
   try {
     const account = await Account.findById(id);
     const pendingOrders = await order.countDocuments({ order_status:{ $ne: "Đã xử lí" }});

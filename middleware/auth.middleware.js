@@ -10,9 +10,6 @@ module.exports.requireAuth = async (req, res, next) => {
     if (!account) {
       return res.status(401).send('Unauthorized');
     }
-    if (decoded.passwordChangedAt !== account.passwordChangedAt.toISOString()) {
-      return res.status(401).send('Token is invalid due to password change');
-    }
     req.id = decoded.id;
     req.role = decoded.role; 
     next();
