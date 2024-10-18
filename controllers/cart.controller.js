@@ -2,7 +2,6 @@ const Cart = require("../models/cart.model");
 const Product = require("../models/product.model");
 module.exports.addProductToCart = async (req, res) => {
   const { user_id, product_id, quantity } = req.body;
-  console.log(req.body);
   try {
     const product = await Product.findById(product_id);
     if (!product) {
@@ -49,12 +48,15 @@ module.exports.addProductToCart = async (req, res) => {
   }
 };
 module.exports.adjustProductQuantity = async (req, res) => {
-  const { user_id, product_id, quantity } = req.body;
+  const { id }  = req;
+  const { product_id, quantity } = req.body;
   try {
-    const cart = await Cart.findOne({ user_id });
+    console.log(1);
+    const cart = await Cart.findOne({ user_id: id });
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
     }
+    console.log(2);
     let product_list = cart.product_list;
     const index = product_list.findIndex((product) => product.product_id === product_id);
     if (index === -1) {
@@ -64,16 +66,18 @@ module.exports.adjustProductQuantity = async (req, res) => {
       return res.status(400).json({ error: "Quantity must be greater than 0" });
     }
     product_list[index].quantity = quantity;
+    console.log(3);
     await cart.save();
+    console.log(4);
     res.status(200).json({ cart });
   } catch (error) {
     res.status(500).json({ error: "Adjust Product Quantity error" });
   }
 };
 module.exports.getCart = async (req, res) => {
-  const { user_id } = req.params;
+  const {id} = req;
   try {
-    const cart = await Cart.findOne({ user_id });
+    const cart = await Cart.findOne({user_id: id});
     const product_list = await Promise.all(cart.product_list.map(async (item) => {
       const product = await Product.findById(item.product_id);
       return {
@@ -91,16 +95,16 @@ module.exports.getCart = async (req, res) => {
       ...cart._doc,
       product_list: product_list
     }
-    console.log(newCart);
     res.status(200).json({cart: newCart});
   } catch (error) {
     res.status(500).json({ error: "Get Cart error" });
   }
 }
 module.exports.deleteProductFromCart = async (req, res) => {
-  const { user_id, product_id } = req.body;
+  const { id } = req;
+  const { product_id } = req.body;
   try {
-    const cart = await Cart.findOne({ user_id });
+    const cart = await Cart.findOne({ user_id: id });
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
     }
@@ -132,9 +136,10 @@ module.exports.deleteAllItemsFromCart = async (req, res) => {
   }
 };
 module.exports.selectProduct = async (req, res) => {
-  const { user_id, product_id, selected } = req.body;
+  const { id } = req;
+  const { product_id, selected } = req.body;
   try {
-    const cart = await Cart.findOne({ user_id });
+    const cart = await Cart.findOne({ user_id: id });
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
     }

@@ -35,8 +35,8 @@ module.exports.login = async (req, res) => {
     res.cookie('refreshToken', refresh_token, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      secure: process.env.NODE_ENV === 'production', // Set to true in production
-      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Adjust based on environment
+      secure: true, // Set to true in production
+      sameSite: 'None', // Adjust based on environment
       path: '/' // Ensure the path is correct
     });
     res.status(200).send({ jwt: access_token, role: account.role, id: account._id });
@@ -71,7 +71,8 @@ module.exports.handleRefreshToken = async (req, res) => {
 module.exports.logout = async (req, res) => {
   const cookie = req.cookies;
   if (!cookie?.jwt) return res.sendStatus(204);
-  res.clearCookie("jwt", { httpOnly: true, sameSite: 'None', secure: true });
+  res.clearCookie("jwt");
+  res.clearCookie("refreshToken", { httpOnly: true, sameSite: 'None', secure: true });
   res.json({ message: "Logged out" });
 }
 module.exports.post = async (req, res) => {

@@ -76,7 +76,7 @@ module.exports.deleteAccount = async (req, res) => {
   }
 };
 module.exports.changePassword = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req;
   const { oldpassword, newpassword } = req.body;
   try {
     console.log("Change password");
@@ -89,8 +89,7 @@ module.exports.changePassword = async (req, res) => {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(newpassword, salt);
       account = await Account.findByIdAndUpdate(id, {
-        password: hashedPassword,
-        passwordChangedAt: Date.now()
+        password: hashedPassword
       });
       console.log("Change password successfully");
       res.status(200).json({ account });
