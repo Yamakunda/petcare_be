@@ -5,26 +5,34 @@ const newsSchema = new mongoose.Schema(
     doctorId: {
       type: String,
       required: true,
+      default: "12323",
     },
     title: {
       type: String,
       required: true,
+
+    },
+    image: {
+      public_id: {
+        type: [String],
+        required: true,
+        default: ["null"],
+      },
+      url: {
+        type: [String],
+        required: true,
+        default: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"],
+      }
     },
     content: {
       type: String,
       required: true,
     },
-    image: {
-        public_id: {
-          type: [String],
-          required: true,
-          default: ["null"],
-        },
-        url: {
-          type: [String],
-          required: true,
-          default: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"],
-        }
+
+    date: {
+      type: Date,
+      required: true,
+      default: Date.now,
     },
 
   },
@@ -33,6 +41,6 @@ const newsSchema = new mongoose.Schema(
   }
 );
 
-const News = mongoose.model("News", newsSchema, "newss");
+const News = mongoose.model("News", newsSchema, "news");
 
 module.exports = News ;
