@@ -4,7 +4,7 @@ module.exports.addNews = async (req, res) => {
 
   try {
     console.log(1);
-    console.log(req.body.image.public_id);
+    console.log(req.body);
     if(req.body.image.public_id == "null"){
       const result = await cloudinary.uploader.upload(req.body.image.url, {
         folder: "news",

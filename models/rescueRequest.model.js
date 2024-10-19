@@ -35,6 +35,8 @@ const rescueRequestSchema = new mongoose.Schema(
     contactPhone: {
       type: String,
       required: true,
+      match: [/^\d{10}$/, 'Please fill a valid phone number with 10 digits'],
+
     },
     requestStatus: {
       type: String,

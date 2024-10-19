@@ -107,14 +107,14 @@ const petSchema = new mongoose.Schema(
 
     arriveDay: {
       type: Date,
-      required: true,
-      default: Date.now,
+      required: false,
+      default: null,
     },
 
     method: {
       type: String,
       required: true,
-      default: "Nhận trực tiếp",
+      default: "",
     },
 
 
