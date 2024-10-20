@@ -114,7 +114,7 @@ const petSchema = new mongoose.Schema(
     method: {
       type: String,
       required: true,
-      default: "",
+      default: "Chưa có phương thức",
     },
 
 
