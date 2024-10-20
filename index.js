@@ -30,7 +30,7 @@ app.locals.moment = moment;
 routeAdmin(app);
 
 app.get("*", (req, res) => {
-  res.status(404).send("404 Not Found");
+  res.status(404).send("404 Not Found 12345");
 });
 
 app.listen(port, () => {
