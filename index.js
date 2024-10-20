@@ -9,13 +9,12 @@ const database = require("./config/database");
 const systemConfig = require("./config/system");
 const routeAdmin = require("./routes/admin/index.route");
 
-
 database.connect();
 
 const app = express();
-const port = process.env.PORT;
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+const port = process.env.PORT || 3000; // Ensure a default port is set
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 const corsOptions = {
   origin: 'dacn-steel.vercel.app', // Your frontend URL
   credentials: true,
@@ -31,9 +30,11 @@ app.locals.moment = moment;
 routeAdmin(app);
 
 app.get("*", (req, res) => {
-  res.send("404 Not Found");
+  res.status(404).send("404 Not Found");
 });
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
+
+module.exports = app; // Ensure the app is exported
