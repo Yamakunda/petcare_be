@@ -104,22 +104,16 @@ const petSchema = new mongoose.Schema(
       required: true,
       default: Date.now,
     },
-
     arriveDay: {
       type: Date,
       required: false,
       default: null,
     },
-
     method: {
       type: String,
       required: true,
-      default: "",
+      default: "Chưa có phương thức",
     },
-
-
-
-
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields

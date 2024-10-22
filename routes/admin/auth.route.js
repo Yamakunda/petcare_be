@@ -7,7 +7,7 @@ const verify_middleware = require("../../middleware/verifyRole.middleware");
 const verifyJWT = require("../../middleware/auth.middleware");
 router.post("/signup", controller.signup);
 router.post("/login", controller.login);
-router.post("/logout", auth_middleware.requireAuth, controller.logout);
+router.post("/logout", controller.logout);
 router.get("/refreshtoken", controller.handleRefreshToken);
 router.get("/test", verifyJWT.requireAuth,verify_middleware.verifyRole("user"), (req,res)=>{res.send("Hello")});
 router.get("/post",auth_middleware.requireAuth, controller.post);

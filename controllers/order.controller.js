@@ -60,7 +60,7 @@ module.exports.getAllOrder = async (req, res) => {
   }
 };
 module.exports.getListOrder = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req;
   try {
     const orders = await Order.find({ user_id: id }).sort({ createdAt: -1 });
     const ordersWithProductDetails = await Promise.all(orders.map(async (order) => {
