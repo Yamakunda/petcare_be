@@ -37,7 +37,7 @@ module.exports.cartToOrder = async (req, res) => {
       total_price: req.body.total_price
     });
     // Generate the payment_id based on the order_id
-    order.payment_id = `${moment().format('DDMMYY')}_${order._id}`;
+    order.payment_id = `${moment().format('YYMMDD')}_${order._id}`;
     await order.save();
     const cart = await Cart.findOne({ user_id: req.body.user_id });
     if (!cart) {
