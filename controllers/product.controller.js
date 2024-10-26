@@ -21,7 +21,6 @@ module.exports.addProduct = async (req, res) => {
     }
     const product = await Product.create(req.body);
     res.status(201).json({ product });
-    console.log(product);
   } catch (error) {
     res.status(400).json({ error });
   }

@@ -4,7 +4,6 @@ module.exports.addAdopt = async (req, res) => {
   try {
     const adopt = await Adopt.create(req.body);
     res.status(201).json({ adopt });
-    console.log(adopt);
   } catch (error) {
     res.status(400).json({ error });
   }

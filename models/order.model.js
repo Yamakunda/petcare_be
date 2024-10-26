@@ -30,6 +30,14 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    payment_id:{
+      type: String,
+      required: true,
+    },
+    payment_url: {
+      type: String,
+      required: true,
+    },
     employee_id: {
       type: String,
       required: true,

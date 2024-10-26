@@ -2,12 +2,11 @@ const Order = require("../models/order.model");
 const Product = require("../models/product.model");
 const Account = require("../models/account.model");
 const Cart = require("../models/cart.model");
+const moment = require("moment");
 module.exports.addOrder = async (req, res) => {
-  console.log(req.body);
   try {
     const order = await Order.create(req.body);
     res.status(201).json({ order });
-    console.log(order);
   } catch (error) {
     res.status(400).json({ error });
   }
@@ -17,14 +16,13 @@ module.exports.cartToOrder = async (req, res) => {
   // payment_method, voucher_id, total_price}
   try {
     console.log("cart to order");
-    console.log(req.body);
     const account = await Account.findById(req.body.user_id);
     if (!account) {
       return res.status(404).json({ error: "Account not found" });
     }
     const order = await Order.create({
       user_id: req.body.user_id,
-      order_status: "Chưa xử lý",
+      order_status: (req.body.payment_method == "Trực tiếp") ? "Chờ xử lý" : "Chờ thanh toán",
       order_address: account.address,
       phone_number: account.phone,
       order_email: account.email,
@@ -32,10 +30,15 @@ module.exports.cartToOrder = async (req, res) => {
       order_date: new Date(),
       delivery_date: new Date(),//Chỉnh sửa khi biết ngày giao hàng
       payment_method: req.body.payment_method,
+      payment_id: "Chưa có",
+      payment_url: "Chưa có",
       employee_id: "Chưa có",
       voucher_id: req.body.voucher_id,
       total_price: req.body.total_price
     });
+    // Generate the payment_id based on the order_id
+    order.payment_id = `${moment().format('DDMMYY')}_${order._id}`;
+    await order.save();
     const cart = await Cart.findOne({ user_id: req.body.user_id });
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
@@ -158,5 +161,41 @@ module.exports.rebuyOrder = async (req, res) => {
     res.status(200).json({ cart });
   } catch (error) {
     res.status(400).json({ error });
+  }
+};
+module.exports.cancelOrder = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    order.order_status = "Đã hủy";
+    await order.save();
+    res.status(200).json({ order });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+}
+module.exports.confirmOrder = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    order.order_status = "Đã xác nhận";
+    await order.save();
+    res.status(200).json({ order });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+};
+module.exports.deleteAllOrder = async (req, res) => {
+  try {
+    await Order.deleteMany();
+    res.status(200).json({ message: "All orders deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };

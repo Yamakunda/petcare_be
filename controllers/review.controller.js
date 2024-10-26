@@ -42,7 +42,6 @@ module.exports.getReviewById = async (req, res) => {
                 return review;
             }
         }));
-        console.log(reviewsWithUserInfo);
         res.status(200).json({ review: reviewsWithUserInfo });
     } catch (error) {
         res.status(400).json({ error });

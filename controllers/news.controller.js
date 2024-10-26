@@ -3,8 +3,6 @@ const cloudinary = require("../config/cloudinary");
 module.exports.addNews = async (req, res) => {
 
   try {
-    console.log(1);
-    console.log(req.body);
     if(req.body.image.public_id == "null"){
       const result = await cloudinary.uploader.upload(req.body.image.url, {
         folder: "news",
@@ -16,11 +14,8 @@ module.exports.addNews = async (req, res) => {
     else{
       req.body.image = { public_id: ["null"], url: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"] };
     }
-    console.log(req.body);
     const news = await News.create(req.body);
-    console.log(2);
     res.status(201).json({ news });
-    console.log(news);
   } catch (error) {
     res.status(400).json({ error });
   }
@@ -47,7 +42,6 @@ module.exports.getNewsById = async (req, res) => {
 };
 module.exports.updateNews = async (req, res) => {
   console.log("Update News");
-  console.log(req.body);
   const { id } = req.params;
   const currentNews = await News.findById(id);
   const ImgId = currentNews.image.public_id;

@@ -42,7 +42,6 @@ module.exports.createOTP = async (req, res) => {
       }
       res.status(201).json({ message: 'OTP sent successfully', otp });
     });
-    console.log(5);
   } catch (error) {
     res.status(400).send(error);
   }

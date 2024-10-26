@@ -2,7 +2,6 @@ const RescueRequest = require("../models/rescueRequest.model");
 const cloudinary = require("../config/cloudinary");
 
 module.exports.addRescue = async (req, res) => {
-  console.log(req.body);
 
   try { 
     if(req.body.image.public_id == "null"){
@@ -18,7 +17,6 @@ module.exports.addRescue = async (req, res) => {
     }
     const rescue = await RescueRequest.create(req.body);
     res.status(201).json({ rescue });
-    console.log(rescue);
   } catch (error) {
     res.status(400).json({ error });
   }

@@ -1,11 +1,8 @@
 const Appointment = require("../models/appointment.model");
 module.exports.addAppointment = async (req, res) => {
-  console.log(req.body);
-
   try {
     const appointment = await Appointment.create(req.body);
     res.status(201).json({ appointment });
-    console.log(appointment);
   } catch (error) {
     res.status(400).json({ error });
   }

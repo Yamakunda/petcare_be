@@ -29,7 +29,6 @@ module.exports.createAccount = async (req, res) => {
 };
 
 module.exports.updateAccount = async (req, res) => {
-  console.log(req);
   const { id } = req;
   const currentAccount = await Account.findById(id);
   const ImgId = currentAccount.avatar.public_id;
@@ -43,7 +42,6 @@ module.exports.updateAccount = async (req, res) => {
       // width: 300,
       // crop: "scale"
   })
-    console.log(result);
     req.body.avatar = {public_id: result.public_id, url: result.secure_url};
   }
     const account = await Account.findByIdAndUpdate(
