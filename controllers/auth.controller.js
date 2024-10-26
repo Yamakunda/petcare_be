@@ -72,7 +72,7 @@ module.exports.logout = async (req, res) => {
   const cookie = req.cookies;
   if (!cookie?.jwt) return res.sendStatus(204);
   res.clearCookie("jwt");
-  res.clearCookie("refreshToken", { httpOnly: true, sameSite: 'None', secure: true });
+  res.clearCookie("refreshToken", { httpOnly: true, sameSite: 'None', secure: true, path: '/' });
   res.json({ message: "Logged out" });
 }
 module.exports.post = async (req, res) => {

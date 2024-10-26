@@ -12,4 +12,7 @@ router.get("/list/User", auth_middleware.requireAuth,verify_middleware.verifyRol
 router.put("/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.updateOrder); 
 router.delete("/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("user"), controller.deleteOrder);
 router.post("/rebuy/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("user"), controller.rebuyOrder);
+router.post("/cancel/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("user"), controller.cancelOrder);
+router.post("/confirm/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.confirmOrder);
+router.post("/deleteAll",controller.deleteAllOrder);
 module.exports = router;
