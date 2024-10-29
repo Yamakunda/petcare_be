@@ -14,6 +14,7 @@ const reviewRoutes = require("./review.route");
 const cartRoutes = require("./cart.route");
 const otpRoutes = require("./otp.route");
 const paymentRoutes = require("./payment.route")
+const notificationRoutes = require("./notification.route");
 module.exports = (app) => {
   app.use("/product", productRoutes);
   app.use("/voucher", voucherRoutes);
@@ -30,6 +31,7 @@ module.exports = (app) => {
   app.use("/cart", cartRoutes);
   app.use("/otp", otpRoutes);
   app.use("/payment", paymentRoutes)
+  app.use("/notification", notificationRoutes);
   // app.use("/test", test);
 
 };
