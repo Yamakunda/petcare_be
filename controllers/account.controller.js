@@ -27,7 +27,18 @@ module.exports.createAccount = async (req, res) => {
     res.status(400).send(error);
   }
 };
-
+module.exports.getAccountInfo = async (req, res) => {
+  const { id } = req;
+  try {
+    const account = await Account.findById(id);
+    if (!account) {
+      return res.status(404).json({ error: "Account not found" });
+    }
+    res.status(200).json({ account });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+};
 module.exports.updateAccount = async (req, res) => {
   const { id } = req;
   const currentAccount = await Account.findById(id);
@@ -125,5 +136,13 @@ module.exports.forgotPassword = async (req, res) => {
     res.status(200).json({message:"Sent new password to your email"});
   } catch (error) {
     res.status(400).json({ error });
+  }
+}
+module.exports.getListUsers = async (req, res) => {
+  try {
+    const users = await Account.find({ role: "user" });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 }

@@ -24,7 +24,7 @@ module.exports.getReviewById = async (req, res) => {
     //   content: 
     const { id } = req.params;
     try {
-        const reviews = await Review.find({ product_id: id });
+        const reviews = await Review.find({ product_id: id }).sort({ createdAt: -1 });
         if (!reviews || reviews.length === 0) {
             return res.status(404).json({ error: "Reviews not found" });
         }

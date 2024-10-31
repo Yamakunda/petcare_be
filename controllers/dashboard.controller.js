@@ -7,10 +7,10 @@ module.exports.getDashboard = async (req, res) => {
   const { id } = req;
   try {
     const account = await Account.findById(id);
-    const pendingOrders = await order.countDocuments({ order_status:{ $ne: "Đã xử lí" }});
-    const pendingAppointments = await appointment.countDocuments({ status: { $ne: "Đã xử lí" } });
-    const pendingPets = await pet.countDocuments({requestStatus: { $ne: "Đã xử lí" }});
-    const pendingRescueRequests = await rescueRequest.countDocuments({ requestStatus: { $ne: "Đã xử lí" } });
+    const pendingOrders = await order.countDocuments({ order_status: "Chờ xử lý" });
+    const pendingAppointments = await appointment.countDocuments({ status: "Chờ xử lý" });
+    const pendingPets = await pet.countDocuments({ requestStatus: "Chờ xử lý" });
+    const pendingRescueRequests = await rescueRequest.countDocuments({ requestStatus: "Đã xử lý" });
     // const admin_account = Account.findById(id);
     const dashboard = {
       pendingOrders: pendingOrders,
@@ -18,7 +18,7 @@ module.exports.getDashboard = async (req, res) => {
       pendingPets: pendingPets,
       pendingRescueRequests: pendingRescueRequests,
     };
-    res.status(200).json({account, dashboard});
+    res.status(200).json({ account, dashboard });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-DONATION(DonationID,Amount,Time,Message)
 const donationSchema = new mongoose.Schema(
   {
     name:{

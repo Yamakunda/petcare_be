@@ -10,7 +10,7 @@ module.exports.addAdopt = async (req, res) => {
 }
 module.exports.getListAdopt = async (req, res) => {
   try {
-    const adopts = await Adopt.find();
+    const adopts = await Adopt.find().sort({ createdAt: -1 });
     res.status(200).json({ adopts });
   } catch (error) {
     res.status(400).json({ error });

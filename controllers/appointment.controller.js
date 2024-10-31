@@ -9,7 +9,7 @@ module.exports.addAppointment = async (req, res) => {
 }
 module.exports.getListAppointment = async (req, res) => {
   try {
-    const appointments = await Appointment.find();
+    const appointments = await Appointment.find().sort({ createdAt: -1 });
     res.status(200).json({ appointments });
   } catch (error) {
     res.status(400).json({ error });

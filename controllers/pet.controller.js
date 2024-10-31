@@ -20,7 +20,7 @@ module.exports.addPet = async (req, res) => {
 }
 module.exports.getListPet = async (req, res) => {
   try {
-    const pets = await Pet.find();
+    const pets = await Pet.find().sort({ createdAt: -1 });
     res.status(200).json({ pets });
   } catch (error) {
     res.status(400).json({ error });
