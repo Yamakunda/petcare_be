@@ -133,7 +133,7 @@ module.exports.checkOrderStatusZalo = async (req, res) => {
       const order_id = app_trans_id.split('_')[1];
       const updatedOrder = await Order.findByIdAndUpdate(
         order_id,
-        { order_status: "Chờ Xử lý" },
+        { order_status: "Chờ xử lý" },
         { new: true, useFindAndModify: false } // Return the updated document and use the new MongoDB driver
       );
       if (!updatedOrder) {

@@ -4,13 +4,24 @@ const Notification = require('../models/notification.model'); // Ensure you have
 module.exports.getUserNotifications = async (req, res) => {
   const { id } = req;
   try {
-    const notifications = await Notification.find({ user_id : id });
+    const notifications = await Notification.find({ user_id : id }).sort({ createdAt: -1 });
     res.status(200).json(notifications);
+    //seen notification
+    await Notification.updateMany({ user_id: id, status: 'Chưa đọc' }, { $set: { status: 'Đã đọc' } });
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-
+module.exports.getUserListNotifications = async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const notifications = await Notification.find({ user_id }).sort({ createdAt: -1 });
+    res.status(200).json(notifications);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
 // Get a single notification by ID
 module.exports.getNotificationById = async (req, res) => {
   const { id } = req.params;
@@ -20,6 +31,8 @@ module.exports.getNotificationById = async (req, res) => {
       return res.status(404).json({ error: 'Notification not found' });
     }
     res.status(200).json(notification);
+    //update seen status
+    await Notification.findByIdAndUpdate(id, { status: 'Đã đọc' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

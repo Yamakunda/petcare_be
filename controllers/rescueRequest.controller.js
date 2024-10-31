@@ -23,7 +23,7 @@ module.exports.addRescue = async (req, res) => {
 }
 module.exports.getListRescue = async (req, res) => {
   try {
-    const rescues = await RescueRequest.find();
+    const rescues = await RescueRequest.find().sort({ createdAt: -1 });
     res.status(200).json({ rescues });
   } catch (error) {
     res.status(400).json({ error });
