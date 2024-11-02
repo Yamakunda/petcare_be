@@ -52,7 +52,7 @@ const productSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      default: "Hoạt động",
+      default: "active",
     },
     image: {
       public_id: {
