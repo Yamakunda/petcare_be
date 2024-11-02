@@ -79,7 +79,9 @@ module.exports.getCart = async (req, res) => {
       return {
         ...item._doc,
         product_name: product ? product.name : null,
-        product_image: product ? product.image.url[0] : null
+        product_image: product ? product.image.url[0] : null,
+        price: product ? product.price : null,
+        discount_price: product ? product.discount_price : null
       };
     }));
     
