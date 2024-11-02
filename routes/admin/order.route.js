@@ -9,10 +9,12 @@ router.post("/cartToOrder", auth_middleware.requireAuth,verify_middleware.verify
 router.get("/list", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.getAllOrder);
 router.get("/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.getOrderById);
 router.get("/list/User", auth_middleware.requireAuth,verify_middleware.verifyRole("user"), controller.getListOrder);
+router.put("/:id/prepare", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.prepareOrder);
+router.put("/:id/deliver", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.deliverOrder);
+router.put("/:id/cancel", auth_middleware.requireAuth,verify_middleware.verifyRole("user"), controller.cancelOrder);
 router.put("/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.updateOrder); 
 router.delete("/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("user"), controller.deleteOrder);
 router.post("/rebuy/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("user"), controller.rebuyOrder);
-router.post("/cancel/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("user"), controller.cancelOrder);
 router.post("/confirm/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.confirmOrder);
 router.post("/deleteAll",controller.deleteAllOrder);
 module.exports = router;

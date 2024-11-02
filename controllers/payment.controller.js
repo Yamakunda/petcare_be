@@ -154,16 +154,16 @@ module.exports.refundZalo = async (req, res) => {
     appid: config.app_id,
     mrefundid: `${moment().format('YYMMDD')}_${config.app_id}_${uid}`,
     timestamp, // miliseconds
-    zptransid: '190508000000022',
-    amount: '50000',
-    description: 'ZaloPay Refund Demo',
+    zptransid: req.body.payment_id,
+    amount: req.body.total_price,
+    description: `ZaloPay Refund cho giao dịch ${req.body.payment_id}`,
   };
 
   // appid|zptransid|amount|description|timestamp
   let data = params.appid + "|" + params.zptransid + "|" + params.amount + "|" + params.description + "|" + params.timestamp;
   params.mac = CryptoJS.HmacSHA256(data, config.key1).toString();
 
-  axios.post(config.endpoint, null, { params })
+  axios.post("https://sandbox.zalopay.com.vn/v001/tpe/partialrefund", null, { params })
     .then(res => console.log(res.data))
     .catch(err => console.log(err));
 }

@@ -16,7 +16,7 @@ const port = process.env.PORT || 3000; // Ensure a default port is set
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 const corsOptions = {
-  origin: ['http://localhost:3000', 'https://dacn-steel.vercel.app'], // Your frontend URL
+  origin: ['https://petcare-be-lilac.vercel.app','http://localhost:3000', 'https://dacn-steel.vercel.app'], // Your frontend URL
   credentials: true,
 };
 app.use(cors(corsOptions));

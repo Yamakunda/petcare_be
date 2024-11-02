@@ -5,6 +5,7 @@ const productSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      unique: true,
     },
     stock: {
       type: Number,
@@ -76,7 +77,7 @@ const productSchema = new mongoose.Schema(
 function calculateDiscountPrice() {
   const discountPercentage = parseFloat(this.discount) / 100;
   this.discount_price = Math.round(this.price - (this.price * discountPercentage));
-  console.log(`Calculated discount_price: ${this.discount_price}`); // Debug log
+  // console.log(`Calculated discount_price: ${this.discount_price}`); // Debug log
 }
 
 // Pre-save hook to calculate discount_price

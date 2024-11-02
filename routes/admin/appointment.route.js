@@ -4,7 +4,7 @@ const router = express.Router();
 const auth_middleware = require("../../middleware/auth.middleware");
 const verify_middleware = require("../../middleware/verifyRole.middleware");
 
-router.post("/add", auth_middleware.requireAuth,verify_middleware.verifyRole("user", "admin", "doctor"), controller.addAppointment);
+router.post("/add", controller.addAppointment);
 router.get("/list", auth_middleware.requireAuth,verify_middleware.verifyRole("admin","doctor"), controller.getListAppointment);
 router.put("/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("admin","doctor"), controller.updateAppointment); 
 router.get("/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("admin","doctor"), controller.getAppointmentById);

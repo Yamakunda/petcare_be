@@ -6,6 +6,7 @@ const voucherSchema = new mongoose.Schema(
       type: String,
       required: true,
       default: "",
+      unique: true,
     },
     quantity: {
       type: Number,
@@ -31,6 +32,7 @@ const voucherSchema = new mongoose.Schema(
       type: String,
       required: true,
       default: "",
+      unique: true,
     },
     discount_type: {
       type: String,

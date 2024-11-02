@@ -56,7 +56,9 @@ module.exports.cartToOrder = async (req, res) => {
 };
 module.exports.getAllOrder = async (req, res) => {
   try {
-    const orders = await Order.find().sort({ order_status: 1 });
+    const orders = await Order.find()
+      .sort({ order_status: 1, createdAt: -1 })
+      .populate('user_id', 'userName'); // Populate userName from Account using user_id
     res.status(200).json({ orders });
   } catch (error) {
     res.status(400).json({ error });
@@ -89,11 +91,29 @@ module.exports.getListOrder = async (req, res) => {
 module.exports.getOrderById = async (req, res) => {
   const { id } = req.params;
   try {
-    const order = await Order.findById(id);
+    const order = await Order.findById(id).populate('user_id', 'userName');;
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }
-    res.status(200).json({ order });
+    if (order.employee_id !== "Chưa có") {
+      const employee = await Account.findById(order.employee_id, 'userName');0
+      order.employee_id = employee.userName;
+    }
+    const productListWithDetails = await Promise.all(order.product_list.map(async (item) => {
+      const product = await Product.findById(item.product_id);
+      return {
+        ...item._doc,
+        product_name: product ? product.name : null,
+        product_image: product ? product.image.url[0] : null
+      };
+    }));
+
+    const orderWithProductDetails = {
+      ...order._doc,
+      product_list: productListWithDetails
+    };
+
+    res.status(200).json({ order: orderWithProductDetails });
   } catch (error) {
     res.status(400).json({ error });
   }
@@ -115,6 +135,47 @@ module.exports.updateOrder = async (req, res) => {
     res.status(400).json({ error });
   }
 };
+
+module.exports.prepareOrder = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    // Iterate over each product in the order
+    for (const item of order.product_list) {
+      const product = await Product.findById(item.product_id);
+      if (product) {
+        product.stock -= item.quantity; // Reduce stock by the quantity ordered
+        product.purchased += item.quantity; // Increase purchased quantity by the same amount
+        await product.save(); // Save the updated product
+      }
+    }
+    order.order_status = "Đã xử lý";
+    order.employee_id = req.id;
+    await order.save();
+    res.status(200).json({ message: "Order prepared and stock updated" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+module.exports.deliverOrder = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    order.order_status = "Đã hoàn thành";
+    await order.save();
+    res.status(200).json({ message: "Order completed" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
 module.exports.deleteOrder = async (req, res) => {
   try {
     const orderId = req.params.id;
