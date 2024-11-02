@@ -8,9 +8,9 @@ module.exports.getDashboard = async (req, res) => {
   try {
     const account = await Account.findById(id);
     const pendingOrders = await order.countDocuments({ order_status: "Chờ xử lý" });
-    const pendingAppointments = await appointment.countDocuments({ status: "Chờ xử lý" });
-    const pendingPets = await pet.countDocuments({ requestStatus: "Chờ xử lý" });
-    const pendingRescueRequests = await rescueRequest.countDocuments({ requestStatus: "Đã xử lý" });
+    const pendingAppointments = await appointment.countDocuments({ doctor_id: "anonymous" });
+    const pendingPets = await pet.countDocuments({ requestStatus: "Đang được yêu cầu" });
+    const pendingRescueRequests = await rescueRequest.countDocuments({ requestStatus: "Đang được yêu cầu" });
     // const admin_account = Account.findById(id);
     const dashboard = {
       pendingOrders: pendingOrders,
