@@ -154,3 +154,16 @@ module.exports.selectProduct = async (req, res) => {
     res.status(500).json({ error: "Select Product error" });
   }
 };
+module.exports.countProductInCart = async (req, res) => {
+  const { id } = req;
+  try {
+    const cart = await Cart.findOne({ user_id: id });
+    if (!cart) {
+      return res.status(404).json({ error: "Cart not found" });
+    }
+    const count = cart.product_list.length;
+    res.status(200).json({ count });
+  } catch (error) {
+    res.status(500).json({ error: "Count Product in Cart error" });
+  }
+}
