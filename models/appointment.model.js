@@ -66,12 +66,19 @@ const appointmentSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      default: "...",
+      default: "Chưa xử lý",
     },
     note: {
       type: String,
       required: false,
+      default: "Chưa có lời nhắn",
     },
+    doctorMessage: {
+      type: String,
+      required: false,
+      default: "Chưa có lời nhắn",
+    },
+    
 
   },
   {
