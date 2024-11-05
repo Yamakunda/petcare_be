@@ -20,7 +20,7 @@ const appointmentSchema = new mongoose.Schema(
     doctor_id: {
       type: String,
       required: true,
-      default: "11111",
+      default: "anonymous",
     },
     phone: {
       type: String,
