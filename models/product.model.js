@@ -92,7 +92,7 @@ productSchema.pre('findOneAndUpdate', function(next) {
   if (update.price || update.discount) {
     const discountPercentage = parseFloat(update.discount) / 100;
     update.discount_price = Math.round(update.price - (update.price * discountPercentage));
-    console.log(`Calculated discount_price: ${update.discount_price}`); // Debug log
+    // console.log(`Calculated discount_price: ${update.discount_price}`); // Debug log
   }
   next();
 });

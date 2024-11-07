@@ -28,7 +28,7 @@ module.exports.cartToOrder = async (req, res) => {
       order_email: account.email,
       product_list: req.body.product_list,
       order_date: new Date(),
-      delivery_date: new Date(),//Chỉnh sửa khi biết ngày giao hàng
+      delivery_date: new Date(), // Chỉnh sửa khi biết ngày giao hàng
       payment_method: req.body.payment_method,
       payment_id: "Chưa có",
       payment_url: "Chưa có",
@@ -38,7 +38,32 @@ module.exports.cartToOrder = async (req, res) => {
     });
     // Generate the payment_id based on the order_id
     order.payment_id = `${moment().format('YYMMDD')}_${order._id}`;
+
+    for (const item of order.product_list) {
+      const product = await Product.findById(item.product_id);
+      
+      if (product) {
+        if (item.quantity > product.stock) {
+          // Remove the product from the cart if quantity exceeds stock
+          const cart = await Cart.findOne({ user_id: req.body.user_id });
+          if (cart) {
+            cart.product_list = cart.product_list.filter(cartItem => cartItem.product_id.toString() !== item.product_id.toString());
+            await cart.save();
+          }
+          continue; // Skip this product in the order
+        }
+
+        product.stock -= item.quantity; // Reduce stock by the quantity ordered
+        if (product.stock <= 0) {
+          product.status = "inactive";
+          product.stock = 0;
+        }
+        product.purchased += item.quantity; // Increase purchased quantity by the same amount
+        await product.save(); // Save the updated product
+      }
+    }
     await order.save();
+
     const cart = await Cart.findOne({ user_id: req.body.user_id });
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
@@ -96,7 +121,7 @@ module.exports.getOrderById = async (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
     if (order.employee_id !== "Chưa có") {
-      const employee = await Account.findById(order.employee_id, 'userName');0
+      const employee = await Account.findById(order.employee_id, 'userName'); 0
       order.employee_id = employee.userName;
     }
     const productListWithDetails = await Promise.all(order.product_list.map(async (item) => {
@@ -144,15 +169,15 @@ module.exports.prepareOrder = async (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    // Iterate over each product in the order
-    for (const item of order.product_list) {
-      const product = await Product.findById(item.product_id);
-      if (product) {
-        product.stock -= item.quantity; // Reduce stock by the quantity ordered
-        product.purchased += item.quantity; // Increase purchased quantity by the same amount
-        await product.save(); // Save the updated product
-      }
-    }
+    // // Iterate over each product in the order
+    // for (const item of order.product_list) {
+    //   const product = await Product.findById(item.product_id);
+    //   if (product) {
+    //     product.stock -= item.quantity; // Reduce stock by the quantity ordered
+    //     product.purchased += item.quantity; // Increase purchased quantity by the same amount
+    //     await product.save(); // Save the updated product
+    //   }
+    // }
     order.order_status = "Đã xử lý";
     order.employee_id = req.id;
     await order.save();

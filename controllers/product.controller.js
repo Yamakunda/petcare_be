@@ -52,11 +52,10 @@ module.exports.updateProduct = async (req, res) => {
     }
     if(req.body.image.public_id == "null"){
     const result = await cloudinary.uploader.upload(req.body.image.url, {
-      folder: "products",
-      // width: 300,
-      // crop: "scale"
+      folder: "products"
     })
     req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
+    console.log(result);
     }
 
     const product = await Product.findByIdAndUpdate(
