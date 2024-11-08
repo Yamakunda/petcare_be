@@ -1,27 +1,28 @@
 const Product = require("../models/product.model");
 const Review = require("../models/review.model");
-const cloudinary = require("../config/cloudinary");
 const diacritics = require('diacritics');
+const imagekit = require("../config/imagekit");
 
 module.exports.addProduct = async (req, res) => {
   try {
-    if(req.body.image.public_id == "null"){
-      const result = await cloudinary.uploader.upload(req.body.image.url, {
-        folder: "products",
-        // width: 300,
-        // crop: "scale"
-      })
-      req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
-    }   
-    else{
-      req.body.image = { public_id: ["null"], url: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"] };
+    if (req.body.image.public_id === "null") {
+      const result = await imagekit.upload({
+        file: req.body.image.url,
+        fileName: "product_image",
+        folder: "products"
+      });
+      req.body.image = { public_id: [result.fileId], url: [result.url] };
+    } else {
+      req.body.image = { public_id: ["null"], url: ["https://ik.imagekit.io/yamakun/No_Image_Available.jpg?updatedAt=1731058703734"] };
     }
+
     const product = await Product.create(req.body);
     res.status(201).json({ product });
   } catch (error) {
     res.status(400).json({ error });
   }
-}
+};
+
 module.exports.getListProduct = async (req, res) => {
   try {
     const products = await Product.find();
@@ -48,14 +49,15 @@ module.exports.updateProduct = async (req, res) => {
   const ImgId = currentProduct.image.public_id;
   try {
     if (ImgId[0] != "null" || !currentProduct) {
-      await cloudinary.uploader.destroy(ImgId);
+      await imagekit.deleteFile(ImgId);
     }
-    if(req.body.image.public_id == "null"){
-    const result = await cloudinary.uploader.upload(req.body.image.url, {
-      folder: "products"
-    })
-    req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
-    console.log(result);
+    if (req.body.image.public_id == "null") {
+      const result = await imagekit.upload({
+        file: req.body.image.url,
+        fileName: "product_image",
+        folder: "products"
+      });
+      req.body.image = { public_id: [result.fileId], url: [result.url] };
     }
 
     const product = await Product.findByIdAndUpdate(
@@ -81,7 +83,7 @@ module.exports.deleteProduct = async (req, res) => {
     //retrieve current image ID
     const imgId = product.image.public_id;
     if (imgId[0] != "null" && imgId[0] != "") {
-      await cloudinary.uploader.destroy(imgId);
+      await imagekit.deleteFile(ImgId);
     }
     // Find the product by ID and delete it
 
@@ -98,7 +100,7 @@ module.exports.searchProductByName = async (req, res) => {
   try {
     const normalizedSearchTerm = diacritics.remove(name);
     const allProducts = await Product.find(); // Retrieve all products
-    const filteredProducts = allProducts.filter(product => 
+    const filteredProducts = allProducts.filter(product =>
       diacritics.remove(product.name).toLowerCase().includes(normalizedSearchTerm.toLowerCase())
     ).slice(0, 5); // Limit to the first 5 matching products
     res.status(200).json({ products: filteredProducts });

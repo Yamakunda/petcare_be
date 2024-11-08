@@ -1,18 +1,17 @@
 const News = require("../models/news.model");
-const cloudinary = require("../config/cloudinary");
+const imagekit = require("../config/imagekit");
 module.exports.addNews = async (req, res) => {
 
   try {
-    if(req.body.image.public_id == "null"){
-      const result = await cloudinary.uploader.upload(req.body.image.url, {
-        folder: "news",
-        // width: 300,
-        // crop: "scale"
-      })
-      req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
-    }
-    else{
-      req.body.image = { public_id: ["null"], url: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"] };
+    if (req.body.image.public_id === "null") {
+      const result = await imagekit.upload({
+        file: req.body.image.url,
+        fileName: "news_image",
+        folder: "news"
+      });
+      req.body.image = { public_id: [result.fileId], url: [result.url] };
+    } else {
+      req.body.image = { public_id: ["null"], url: ["https://ik.imagekit.io/yamakun/No_Image_Available.jpg?updatedAt=1731058703734"] };
     }
     const news = await News.create(req.body);
     res.status(201).json({ news });
@@ -46,16 +45,16 @@ module.exports.updateNews = async (req, res) => {
   const currentNews = await News.findById(id);
   const ImgId = currentNews.image.public_id;
   try {
-    if (ImgId[0] != "null" || !currentNews) {
-      await cloudinary.uploader.destroy(ImgId);
-    }
-    if(req.body.image.public_id == "null"){
-    const result = await cloudinary.uploader.upload(req.body.image.url, {
-      folder: "news",
-      // width: 300,
-      // crop: "scale"
-    })
-    req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
+     // if (ImgId[0] != "null" || !currentNews) {
+    //   await imagekit.deleteFile(ImgId);
+    // }
+    if (req.body.image.public_id == "null") {
+      const result = await imagekit.upload({
+        file: req.body.image.url,
+        fileName: "news_image",
+        folder: "news"
+      });
+      req.body.image = { public_id: [result.fileId], url: [result.url] };
     }
     const news = await News.findByIdAndUpdate(
       id,
@@ -80,7 +79,7 @@ module.exports.deleteNews = async (req, res) => {
       //retrieve current image ID
       const imgId = news.image.public_id;
       if (imgId[0] != "null" && imgId[0] != "") {
-        await cloudinary.uploader.destroy(imgId);
+        await imagekit.deleteFile(ImgId);
       }
 
       const petrm = await News.findByIdAndDelete(petId);
