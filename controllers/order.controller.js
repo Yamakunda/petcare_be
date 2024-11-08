@@ -256,13 +256,27 @@ module.exports.cancelOrder = async (req, res) => {
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }
+
+    // Iterate over each product in the order and return the stock
+    for (const item of order.product_list) {
+      const product = await Product.findById(item.product_id);
+      if (product) {
+        product.stock += item.quantity; // Increase stock by the quantity ordered
+        product.purchased -= item.quantity; // Decrease purchased quantity by the same amount
+        if (product.stock > 0 && product.status === "inactive") {
+          product.status = "active"; // Reactivate the product if it was inactive
+        }
+        await product.save(); // Save the updated product
+      }
+    }
+
     order.order_status = "Đã hủy";
     await order.save();
     res.status(200).json({ order });
   } catch (error) {
     res.status(400).json({ error });
   }
-}
+};
 module.exports.confirmOrder = async (req, res) => {
   const { id } = req.params;
   try {

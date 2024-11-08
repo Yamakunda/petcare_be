@@ -42,8 +42,10 @@ module.exports.getNotificationById = async (req, res) => {
 module.exports.createNotification = async (req, res) => {
   // const { user_id, title, content, status } = req.body;
   try {
+    console.log(req.body);
     const notification = new Notification(req.body);
     await notification.save();
+    console.log(notification);
     res.status(201).json(notification);
   } catch (error) {
     res.status(400).json({ error: error.message });

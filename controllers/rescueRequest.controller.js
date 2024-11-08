@@ -1,19 +1,17 @@
 const RescueRequest = require("../models/rescueRequest.model");
-const cloudinary = require("../config/cloudinary");
-
+const imagekit = require("../config/imagekit");
 module.exports.addRescue = async (req, res) => {
 
   try { 
-    if(req.body.image.public_id == "null"){
-      const result = await cloudinary.uploader.upload(req.body.image.url, {
-        folder: "rescues",
-        // width: 300,
-        // crop: "scale"
-      })
-      req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
-    }
-    else{
-      req.body.image = { public_id: ["null"], url: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"] };
+    if (req.body.image.public_id === "null") {
+      const result = await imagekit.upload({
+        file: req.body.image.url,
+        fileName: "rescue_image",
+        folder: "rescues"
+      });
+      req.body.image = { public_id: [result.fileId], url: [result.url] };
+    } else {
+      req.body.image = { public_id: ["null"], url: ["https://ik.imagekit.io/yamakun/No_Image_Available.jpg?updatedAt=1731058703734"] };
     }
     const rescue = await RescueRequest.create(req.body);
     res.status(201).json({ rescue });
@@ -49,16 +47,16 @@ module.exports.updateRescue = async (req, res) => {
   
   // const { name, stock, category, price, discount, description, status, image } = req.body;
   try {
-    if (ImgId[0] != "null" || !currentRescue) {
-      await cloudinary.uploader.destroy(ImgId);
-    }
-    if(req.body.image.public_id == "null"){
-    const result = await cloudinary.uploader.upload(req.body.image.url, {
-      folder: "rescues",
-      // width: 300,
-      // crop: "scale"
-    })
-    req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
+    // if (ImgId[0] != "null" || !currentRescue) {
+    //   await imagekit.deleteFile(ImgId);
+    // }
+    if (req.body.image.public_id == "null") {
+      const result = await imagekit.upload({
+        file: req.body.image.url,
+        fileName: "rescue_image",
+        folder: "rescues"
+      });
+      req.body.image = { public_id: [result.fileId], url: [result.url] };
     }
     const rescue = await RescueRequest.findByIdAndUpdate(
       id,
@@ -83,7 +81,7 @@ module.exports.deleteRescue = async (req, res) => {
       //retrieve current image ID
       const imgId = rescue_curr.image.public_id;
       if (imgId[0] != "null" && imgId[0] != "") {
-        await cloudinary.uploader.destroy(imgId);
+        await imagekit.deleteFile(imgId);
       }
       // Find the rescue by ID and delete it
       const rescue = await RescueRequest.findByIdAndDelete(rescueId);

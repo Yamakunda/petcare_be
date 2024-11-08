@@ -1,9 +1,9 @@
 const Account = require("../models/account.model");
-const cloudinary = require("../config/cloudinary");
 const Cart = require("../models/cart.model");
 const bcrypt = require("bcrypt");
 const nodemailer = require('nodemailer');
 const generate = require("../helpers/generate");
+const imagekit = require("../config/imagekit");
 const transporter = nodemailer.createTransport({
   service: 'gmail', 
   auth: {
@@ -43,18 +43,18 @@ module.exports.updateAccount = async (req, res) => {
   const { id } = req;
   const currentAccount = await Account.findById(id);
   const ImgId = currentAccount.avatar.public_id;
-  if (ImgId != "null") {
-    await cloudinary.uploader.destroy(ImgId);
-  }
   try {
-    if(req.body.avatar.public_id == "null"){
-    const result = await cloudinary.uploader.upload(req.body.avatar.url, {
-      folder: "accounts",
-      // width: 300,
-      // crop: "scale"
-  })
-    req.body.avatar = {public_id: result.public_id, url: result.secure_url};
-  }
+    // if (ImgId != "null") {
+    //   await imagekit.deleteFile(ImgId);
+    // }
+    if (req.body.avatar.public_id == "null") {
+      const result = await imagekit.upload({
+        file: req.body.avatar.url,
+        fileName: "account_image",
+        folder: "accounts"
+      });
+      req.body.avatar = { public_id: result.fileId, url: result.url };
+    }
     const account = await Account.findByIdAndUpdate(
       id,
       req.body,
@@ -70,9 +70,9 @@ module.exports.deleteAccount = async (req, res) => {
   const { id } = req.params;
   const currentAccount = await Account.findById(id);
   const ImgId = currentAccount.avatar.public_id;
-  if (ImgId != "null") {
-    await cloudinary.uploader.destroy(ImgId);
-  }
+  // if (ImgId != "null") {
+  //   await imagekit.deleteFile(ImgId);
+  // }
   try {
     const account = await Account.findByIdAndDelete(id);
     if (!account) {

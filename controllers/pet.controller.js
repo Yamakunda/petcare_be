@@ -1,17 +1,18 @@
 const Pet = require("../models/pet.model");
-const cloudinary = require("../config/cloudinary");
+const imagekit = require("../config/imagekit");
 module.exports.addPet = async (req, res) => {
   try {
-    if(req.body.image.public_id == "null"){
-      const result = await cloudinary.uploader.upload(req.body.image.url, {
-        folder: "pets",
-      })
-      req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
+    if (req.body.image.public_id === "null") {
+      const result = await imagekit.upload({
+        file: req.body.image.url,
+        fileName: "pet_image",
+        folder: "pets"
+      });
+      req.body.image = { public_id: [result.fileId], url: [result.url] };
+    } else {
+      req.body.image = { public_id: ["null"], url: ["https://ik.imagekit.io/yamakun/No_Image_Available.jpg?updatedAt=1731058703734"] };
     }
-
-    else{
-      req.body.image = { public_id: ["null"], url: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"] };
-    }
+    
     const pet = await Pet.create(req.body);
     res.status(201).json({ pet });
   } catch (error) {
@@ -43,16 +44,16 @@ module.exports.updatePet = async (req, res) => {
   const currentPet = await Pet.findById(id);
   const ImgId = currentPet.image.public_id;
   try {
-    if (ImgId[0] != "null" || !currentPet) {
-      await cloudinary.uploader.destroy(ImgId);
-    }
-    if(req.body.image.public_id == "null"){
-    const result = await cloudinary.uploader.upload(req.body.image.url, {
-      folder: "pets",
-      // width: 300,
-      // crop: "scale"
-    })
-    req.body.image = { public_id: [result.public_id], url: [result.secure_url] };
+    // if (ImgId[0] != "null" || !currentPet) {
+    //   await imagekit.deleteFile(ImgId);
+    // }
+    if (req.body.image.public_id == "null") {
+      const result = await imagekit.upload({
+        file: req.body.image.url,
+        fileName: "pet_image",
+        folder: "pets"
+      });
+      req.body.image = { public_id: [result.fileId], url: [result.url] };
     }
     const pet = await Pet.findByIdAndUpdate(
       id,
@@ -76,9 +77,10 @@ module.exports.deletePet = async (req, res) => {
       }
       //retrieve current image ID
       const imgId = pet.image.public_id;
-      if (imgId[0] != "null" && imgId[0] != "") {
-        await cloudinary.uploader.destroy(imgId);
-      }
+
+      // if (imgId[0] != "null" && imgId[0] != "") {
+      //   await imagekit.deleteFile(ImgId);
+      // }
 
       const petrm = await Pet.findByIdAndDelete(petId);
 
