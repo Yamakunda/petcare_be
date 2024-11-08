@@ -35,6 +35,7 @@ module.exports.addProductToCart = async (req, res) => {
           quantity: quantity,
           price: product.price,
           discount_price: product.discount_price,
+          stock: product.stock,
         });
       }
     }
