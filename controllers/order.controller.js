@@ -223,29 +223,49 @@ module.exports.rebuyOrder = async (req, res) => {
   try {
     const order = await Order.findById(id);
     if (!order) {
+      console.log("Order not found");
       return res.status(404).json({ error: "Order not found" });
     }
+    console.log("Order found:", order);
+
     const product_list = order.product_list;
     const cart = await Cart.findOne({ user_id: order.user_id });
     if (!cart) {
+      console.log("Cart not found");
       return res.status(404).json({ error: "Cart not found" });
     }
+    console.log("Cart found:", cart);
+
     for (const item of product_list) {
       const product = await Product.findById(item.product_id);
       if (!product) {
+        console.log(`Product not found for ID: ${item.product_id}`);
         continue; // Skip to the next product if not found
       }
-      const cartItem = {
-        product_id: item.product_id,
-        quantity: item.quantity,
-        price: product.price,
-        discount_price: product.discount_price
-      };
-      cart.product_list.push(cartItem);
+      console.log("Product found:", product);
+
+      const existingCartItem = cart.product_list.find(cartItem => cartItem.product_id.toString() === item.product_id.toString());
+      if (existingCartItem) {
+        // Update the quantity of the existing item
+        existingCartItem.quantity += item.quantity;
+      } else {
+        // Add a new item to the cart
+        const cartItem = {
+          product_id: item.product_id,
+          quantity: item.quantity,
+          price: product.price,
+          discount_price: product.discount_price,
+          stock: product.stock
+        };
+        cart.product_list.push(cartItem);
+      }
     }
+
     await cart.save();
+    console.log("Cart saved successfully");
     res.status(200).json({ cart });
   } catch (error) {
+    console.error("Error rebuying order:", error);
     res.status(400).json({ error });
   }
 };
