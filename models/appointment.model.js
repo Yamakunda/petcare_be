@@ -12,6 +12,11 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
       default: "1111",
     },
+    userEmail: {
+      type: String,
+      required: true,
+      default: "anonymous",
+    },
     doctorName: {
       type: String,
       required: true,
@@ -26,7 +31,6 @@ const appointmentSchema = new mongoose.Schema(
       type: String,
       required: true,
       match: [/^\d{10}$/, 'Please fill a valid phone number with 10 digits'],
-
     },
     address: {
       type: String,

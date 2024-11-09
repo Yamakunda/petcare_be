@@ -10,4 +10,5 @@ router.put("/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("adm
 router.get("/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.getVouchertById);
 router.delete("/:id",auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.deleteVoucher);
 router.get("/code/:code", auth_middleware.requireAuth,verify_middleware.verifyRole("admin","user"),controller.getVoucherByCode);
+router.get("/user/list", auth_middleware.requireAuth,verify_middleware.verifyRole("user"), controller.getUserVouchers);
 module.exports = router;

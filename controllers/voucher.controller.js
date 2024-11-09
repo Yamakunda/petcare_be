@@ -10,7 +10,19 @@ exports.getAllVouchers = async (req, res) => {
     }
 };
 
-
+exports.getUserVouchers = async (req, res) => {
+    try {
+      const currentDate = new Date();
+      const vouchers = await Voucher.find({
+        status: 'active',
+        // beginDate: { $lte: currentDate },
+        // endDate: { $gte: currentDate }
+      });
+      res.status(200).json(vouchers);
+    } catch (error) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
 // Create a new voucher
 exports.createVoucher = async (req, res) => {
     try {

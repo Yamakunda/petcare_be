@@ -44,9 +44,9 @@ module.exports.updatePet = async (req, res) => {
   const currentPet = await Pet.findById(id);
   const ImgId = currentPet.image.public_id;
   try {
-    // if (ImgId[0] != "null" || !currentPet) {
-    //   await imagekit.deleteFile(ImgId);
-    // }
+    if (ImgId[0] != "null" || !currentPet) {
+      await imagekit.deleteFile(ImgId);
+    }
     if (req.body.image.public_id == "null") {
       const result = await imagekit.upload({
         file: req.body.image.url,
@@ -78,9 +78,9 @@ module.exports.deletePet = async (req, res) => {
       //retrieve current image ID
       const imgId = pet.image.public_id;
 
-      // if (imgId[0] != "null" && imgId[0] != "") {
-      //   await imagekit.deleteFile(ImgId);
-      // }
+      if (imgId[0] != "null" && imgId[0] != "") {
+        await imagekit.deleteFile(ImgId);
+      }
 
       const petrm = await Pet.findByIdAndDelete(petId);
 
