@@ -146,3 +146,19 @@ module.exports.getListUsers = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 }
+module.exports.getListAdmins = async (req, res) => {
+  try {
+    const admins = await Account.find({ role: "admin" });
+    res.status(200).json(admins);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+module.exports.getListDoctors = async (req, res) => {
+  try {
+    const doctors = await Account.find({ role: "doctor" });
+    res.status(200).json(doctors);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}

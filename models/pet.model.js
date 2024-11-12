@@ -71,7 +71,6 @@ const petSchema = new mongoose.Schema(
     resquestDay: {
       type: Date,
       required: true,
-      
       default: Date.now,
     },
     adoptDay: {
