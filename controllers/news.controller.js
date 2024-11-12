@@ -45,7 +45,7 @@ module.exports.updateNews = async (req, res) => {
   const currentNews = await News.findById(id);
   const ImgId = currentNews.image.public_id;
   try {
-     // if (ImgId[0] != "null" || !currentNews) {
+    //  if (ImgId[0] != "null" || !currentNews) {
     //   await imagekit.deleteFile(ImgId);
     // }
     if (req.body.image.public_id == "null") {
