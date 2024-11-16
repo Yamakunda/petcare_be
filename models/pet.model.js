@@ -49,7 +49,7 @@ const petSchema = new mongoose.Schema(
       url: {
         type: [String],
         required: true,
-        default: ["https://res.cloudinary.com/dzm879qpm/image/upload/v1724509562/defautProduct_mlmwsw.png"],
+        default: ["https://ik.imagekit.io/yamakun/No_Image_Available.jpg"],
       }
     },
     // THONG TIN NGUOI NHAN NUOI

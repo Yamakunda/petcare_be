@@ -65,6 +65,7 @@ module.exports.updatePet = async (req, res) => {
     }
     res.status(200).json({ pet });
   } catch (error) {
+    console.log(error);
     res.status(400).json({ error });
   }
 };

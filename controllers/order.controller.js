@@ -194,6 +194,7 @@ module.exports.deliverOrder = async (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
     order.order_status = "Đã hoàn thành";
+    order.paid = true;
     await order.save();
     res.status(200).json({ message: "Order completed" });
   } catch (error) {

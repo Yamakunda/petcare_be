@@ -5,27 +5,27 @@ const appointmentSchema = new mongoose.Schema(
     userName: {
       type: String,
       required: true,
-      default: "anonymous",
+      default: "unknown",
     },
     user_id: {
       type: String,
       required: true,
-      default: "1111",
+      default: "unknown",
     },
     userEmail: {
       type: String,
       required: true,
-      default: "anonymous",
+      default: "unknown",
     },
     doctorName: {
       type: String,
       required: true,
-      default: "anonymous",
+      default: "unknown",
     },
     doctor_id: {
       type: String,
       required: true,
-      default: "anonymous",
+      default: "unknown",
     },
     phone: {
       type: String,
@@ -35,37 +35,37 @@ const appointmentSchema = new mongoose.Schema(
     address: {
       type: String,
       required: true,
-      default: "anonymous",
+      default: "unknown",
     },
     date: {
       type: Date,
       required: true,
-      default: Date.now,
+      default: Date.now(),
     },
     time: {
       type: String,
       required: true,
-      default: "anonymous",
+      default: "unknown",
     },
     petAge: {
       type: String,
       required: true,
-      default: "anonymous",
+      default: "unknown",
     },
     weight: {
       type: String,
       required: true,
-      default: "anonymous",
+      default: "unknown",
     },
     petGender: {
       type: String,
       required: true,
-      default: "anonymous",
+      default: "unknown",
     },
     service: {
       type: String,
       required: true,
-      default: "anonymous",
+      default: "unknown",
     },
     status: {
       type: String,
@@ -81,6 +81,11 @@ const appointmentSchema = new mongoose.Schema(
       type: String,
       required: false,
       default: "Chưa có lời nhắn",
+    },
+    paid: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
     
 

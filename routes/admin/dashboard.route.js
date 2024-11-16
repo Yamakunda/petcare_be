@@ -5,6 +5,7 @@ const auth_middleware = require("../../middleware/auth.middleware");
 const verify_middleware = require("../../middleware/verifyRole.middleware");
 
 router.get("/count", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.getDashboard);
+router.get("/doctor", auth_middleware.requireAuth,verify_middleware.verifyRole("doctor"), controller.getDoctorDashboard);
 router.get("/graph/order", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.getGraphOrderData);
 router.get("/graph/appointment", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.getGraphAppointmentData);
 router.get("/graph/adopt", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.getGraphPetData);
