@@ -198,7 +198,8 @@ module.exports.getGraphRevenueData = async (req, res) => {
           },
           $or: [
             { payment_method: "Trực tiếp", order_status: "Đã hoàn thành" },
-            { payment_method: "ZaloPay", order_status: { $ne: "Chờ thanh toán" } }
+            { payment_method: "ZaloPay", order_status: { $ne: "Chờ thanh toán" } },
+            { paid: true }
           ]
         }
       },
@@ -436,6 +437,87 @@ module.exports.getGraphAppointmentData = async (req, res) => {
     };
 
     res.status(200).json(graphData);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+module.exports.getDoctorDashboard = async (req, res) => {
+  try {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    const appointmentsToday = await appointment.countDocuments({
+      date: {
+        $gte: startOfToday,
+        $lte: endOfToday
+      }
+    });
+
+    // Count appointments from last 7 days to next 7 days
+    const startOfRange = new Date();
+    startOfRange.setDate(startOfRange.getDate() - 7);
+    startOfRange.setHours(0, 0, 0, 0);
+
+    const endOfRange = new Date();
+    endOfRange.setDate(endOfRange.getDate() + 7);
+    endOfRange.setHours(23, 59, 59, 999);
+
+    const appointmentsInRange = await appointment.aggregate([
+      {
+        $match: {
+          date: {
+            $gte: startOfRange,
+            $lte: endOfRange
+          }
+        }
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { _id: 1 }
+      }
+    ]);
+
+    const generateDateArray = (start, end) => {
+      const dates = [];
+      const currentDate = new Date(start);
+      while (currentDate <= end) {
+        dates.push(new Date(currentDate).toISOString().split('T')[0]);
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      return dates;
+    };
+
+    const fillMissingDates = (data, dates) => {
+      const dateMap = dates.reduce((acc, date) => {
+        acc[date] = 0;
+        return acc;
+      }, {});
+
+      data.forEach(item => {
+        dateMap[item._id] = item.count;
+      });
+
+      return Object.keys(dateMap).map(date => ({
+        _id: date,
+        count: dateMap[date]
+      }));
+    };
+
+    const dates = generateDateArray(startOfRange, endOfRange);
+    const appointmentsInRangeFilled = fillMissingDates(appointmentsInRange, dates);
+
+    res.status(200).json({ 
+      appointmentsToday: appointmentsToday,
+      appointmentsLastweek2Nextweek: appointmentsInRangeFilled
+    });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }

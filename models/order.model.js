@@ -35,6 +35,11 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    paid: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     employee_id: {
       type: String,
       required: true,

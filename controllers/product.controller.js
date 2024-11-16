@@ -83,7 +83,7 @@ module.exports.deleteProduct = async (req, res) => {
     //retrieve current image ID
     const imgId = product.image.public_id;
     if (imgId[0] != "null" && imgId[0] != "") {
-      await imagekit.deleteFile(ImgId);
+      await imagekit.deleteFile(imgId);
     }
     // Find the product by ID and delete it
 

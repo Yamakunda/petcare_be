@@ -1,16 +1,29 @@
-
 const mongoose = require("mongoose");
-const newsSchema = new mongoose.Schema(
-  {
-    doctorId: {
-      type: String,
-      required: true,
-      default: "12323",
-    },
-    title: {
-      type: String,
-      required: true,
 
+const serviceSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+      default: "Không có mô tả",
+    },
+    status: {
+      type: String,
+      required: true,
+      default: "active",
     },
     image: {
       public_id: {
@@ -24,23 +37,12 @@ const newsSchema = new mongoose.Schema(
         default: ["https://ik.imagekit.io/yamakun/No_Image_Available.jpg"],
       }
     },
-    content: {
-      type: String,
-      required: true,
-    },
-
-    date: {
-      type: Date,
-      required: true,
-      default: Date.now,
-    },
-
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields
   }
 );
 
-const News = mongoose.model("News", newsSchema, "news");
+const Service = mongoose.model("Service", serviceSchema, "services");
 
-module.exports = News ;
+module.exports = Service;
