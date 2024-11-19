@@ -22,7 +22,7 @@ module.exports.addService = async (req, res) => {
 
 module.exports.getListService = async (req, res) => {
   try {
-    const services = await Service.find();
+    const services = await Service.find({status: "active"});
     res.status(200).json({ services });
   } catch (error) {
     res.status(400).json({ error });

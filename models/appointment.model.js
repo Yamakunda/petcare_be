@@ -87,8 +87,11 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
       default: false,
     },
-    
-
+    service: {
+      type: [String],
+      required: true,
+      default: [],
+    },
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields
