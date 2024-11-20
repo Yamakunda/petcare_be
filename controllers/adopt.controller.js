@@ -1,6 +1,5 @@
 const Adopt = require("../models/adopt.model");
 module.exports.addAdopt = async (req, res) => {
-  console.log(req.body);
   try {
     const adopt = await Adopt.create(req.body);
     res.status(201).json({ adopt });

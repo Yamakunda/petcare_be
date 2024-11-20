@@ -19,7 +19,7 @@ const accountSchema = new mongoose.Schema(
     },
     passwordChangedAt: {
       type: Date,
-      default: Date.now,
+      default: Date.now(),
     },
     phone: {
       type: String,

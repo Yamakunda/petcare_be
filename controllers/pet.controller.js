@@ -79,9 +79,9 @@ module.exports.deletePet = async (req, res) => {
       //retrieve current image ID
       const imgId = pet.image.public_id;
 
-      if (imgId[0] != "null" && imgId[0] != "") {
-        await imagekit.deleteFile(ImgId);
-      }
+      // if (imgId[0] != "null" && imgId[0] != "") {
+      //   await imagekit.deleteFile(ImgId);
+      // }
 
       const petrm = await Pet.findByIdAndDelete(petId);
 

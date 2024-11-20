@@ -5,7 +5,7 @@ const auth_middleware = require("../../middleware/auth.middleware");
 const verify_middleware = require("../../middleware/verifyRole.middleware");
 
 router.post("/add", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.addProduct);
-router.get("/list", controller.getListProduct);
+router.get("/list", controller.getListProductUser);
 router.get("/admin/list", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.getListProduct);
 router.put("/:id", auth_middleware.requireAuth,verify_middleware.verifyRole("admin"), controller.updateProduct); 
 router.get("/:id", controller.getProductById);

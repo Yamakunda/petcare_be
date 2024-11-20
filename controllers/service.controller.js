@@ -45,9 +45,9 @@ module.exports.updateService = async (req, res) => {
   const currentService = await Service.findById(id);
   const ImgId = currentService.image.public_id;
   try {
-    if (ImgId[0] != "null" || !currentService) {
-      await imagekit.deleteFile(ImgId);
-    }
+    // if (ImgId[0] != "null" || !currentService) {
+    //   await imagekit.deleteFile(ImgId);
+    // }
     if (req.body.image.public_id == "null") {
       const result = await imagekit.upload({
         file: req.body.image.url,
@@ -79,9 +79,10 @@ module.exports.deleteService = async (req, res) => {
     }
     //retrieve current image ID
     const imgId = service.image.public_id;
-    if (imgId[0] != "null" && imgId[0] != "") {
-      await imagekit.deleteFile(imgId);
-    }
+    // if (imgId[0] != "null" && imgId[0] != "") {
+    //   await imagekit.deleteFile(imgId);
+    // }
+    const deletedService = await Service.findByIdAndDelete(serviceId);
 
     res.status(200).json({ message: 'Service deleted successfully' });
   } catch (error) {

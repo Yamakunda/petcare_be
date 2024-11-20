@@ -23,6 +23,14 @@ module.exports.addProduct = async (req, res) => {
   }
 };
 
+module.exports.getListProductUser = async (req, res) => {
+  try {
+    const products = await Product.find({status: "active"});
+    res.status(200).json({ products });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+}
 module.exports.getListProduct = async (req, res) => {
   try {
     const products = await Product.find();
@@ -48,9 +56,9 @@ module.exports.updateProduct = async (req, res) => {
   const currentProduct = await Product.findById(id);
   const ImgId = currentProduct.image.public_id;
   try {
-    if (ImgId[0] != "null" || !currentProduct) {
-      await imagekit.deleteFile(ImgId);
-    }
+    // if (ImgId[0] != "null" || !currentProduct) {
+    //   await imagekit.deleteFile(ImgId);
+    // }
     if (req.body.image.public_id == "null") {
       const result = await imagekit.upload({
         file: req.body.image.url,
@@ -82,9 +90,9 @@ module.exports.deleteProduct = async (req, res) => {
     }
     //retrieve current image ID
     const imgId = product.image.public_id;
-    if (imgId[0] != "null" && imgId[0] != "") {
-      await imagekit.deleteFile(imgId);
-    }
+    // if (imgId[0] != "null" && imgId[0] != "") {
+    //   await imagekit.deleteFile(imgId);
+    // }
     // Find the product by ID and delete it
 
     const rmproduct = await Product.findByIdAndDelete(productId);
