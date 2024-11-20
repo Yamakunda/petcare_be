@@ -15,6 +15,8 @@ const cartRoutes = require("./cart.route");
 const otpRoutes = require("./otp.route");
 const paymentRoutes = require("./payment.route")
 const notificationRoutes = require("./notification.route");
+const serviceRoutes = require("./service.route");
+const test = require("./test");
 module.exports = (app) => {
   app.use("/product", productRoutes);
   app.use("/voucher", voucherRoutes);
@@ -32,6 +34,7 @@ module.exports = (app) => {
   app.use("/otp", otpRoutes);
   app.use("/payment", paymentRoutes)
   app.use("/notification", notificationRoutes);
-  // app.use("/test", test);
+  app.use("/service", serviceRoutes);
+  app.use("/test", test);
 
 };
