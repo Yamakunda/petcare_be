@@ -16,7 +16,7 @@ const voucherSchema = new mongoose.Schema(
     UsedTime: {
       type: Number,
       required: true,
-      default: "0",
+      default: "99",
     },
     beginDate: {
       type: Date,

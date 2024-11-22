@@ -48,9 +48,9 @@ module.exports.updateProduct = async (req, res) => {
   const currentProduct = await Product.findById(id);
   const ImgId = currentProduct.image.public_id;
   try {
-    if (ImgId[0] != "null" || !currentProduct) {
-      await imagekit.deleteFile(ImgId);
-    }
+    // if (ImgId[0] != "null" || !currentProduct) {
+    //   await imagekit.deleteFile(ImgId);
+    // }
     if (req.body.image.public_id == "null") {
       const result = await imagekit.upload({
         file: req.body.image.url,
