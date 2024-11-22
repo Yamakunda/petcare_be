@@ -2,6 +2,7 @@ const Order = require("../models/order.model");
 const Product = require("../models/product.model");
 const Account = require("../models/account.model");
 const Cart = require("../models/cart.model");
+const Voucher = require("../models/voucher.model");
 const moment = require("moment");
 module.exports.addOrder = async (req, res) => {
   try {
@@ -15,7 +16,6 @@ module.exports.cartToOrder = async (req, res) => {
   // API body: {user_id, product_list: [{product_id, quantity, price, discount_price}]',
   // payment_method, voucher_id, total_price}
   try {
-    console.log("cart to order");
     const account = await Account.findById(req.body.user_id);
     if (!account) {
       return res.status(404).json({ error: "Account not found" });
@@ -63,7 +63,11 @@ module.exports.cartToOrder = async (req, res) => {
       }
     }
     await order.save();
-
+    const voucher = await Voucher.findOne({ _id: req.body.voucher_id });
+    if (voucher) {
+      voucher.quantity-=1;
+      await voucher.save();
+    }
     const cart = await Cart.findOne({ user_id: req.body.user_id });
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });

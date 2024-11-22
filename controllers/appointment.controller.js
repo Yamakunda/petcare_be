@@ -28,7 +28,6 @@ module.exports.getAppointmentById = async (req, res) => {
   }
 };
 module.exports.updateAppointment = async (req, res) => {
-  console.log("Update Appointment");
   const { id } = req.params;
   // const { name, stock, category, price, discount, description, status, image } = req.body;
   try {
