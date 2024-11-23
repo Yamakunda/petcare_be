@@ -89,11 +89,11 @@ module.exports.changePassword = async (req, res) => {
   const { oldpassword, newpassword } = req.body;
   try {
     console.log("Change password");
-    const account = await Account.findById(id);
+    var account = await Account.findById(id);
     const check = await bcrypt.compare(oldpassword, account.password);
-    if(!check){
+    if (!check) {
       console.log("Old password is incorrect");
-      res.status(400).json({ error: "Old password is incorrect" });
+      return res.status(400).json({ message: "WRONG_PASSWORD" });
     } else {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(newpassword, salt);
