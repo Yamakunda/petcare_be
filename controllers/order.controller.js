@@ -23,8 +23,8 @@ module.exports.cartToOrder = async (req, res) => {
     const order = await Order.create({
       user_id: req.body.user_id,
       order_status: (req.body.payment_method == "Trực tiếp") ? "Chờ xử lý" : "Chờ thanh toán",
-      order_address: account.address,
-      phone_number: account.phone,
+      order_address: req.body.order_address,
+      phone_number: account.phone || "Chưa cập nhật",
       order_email: account.email,
       product_list: req.body.product_list,
       order_date: new Date(),
@@ -88,7 +88,8 @@ module.exports.getAllOrder = async (req, res) => {
     const orders = await Order.find()
       .sort({ order_status: 1, createdAt: -1 })
       .populate('user_id', 'userName'); // Populate userName from Account using user_id
-    res.status(200).json({ orders });
+
+    res.status(200).json({ orders: orders.length ? orders : [] });
   } catch (error) {
     res.status(400).json({ error });
   }

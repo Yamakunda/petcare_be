@@ -214,6 +214,34 @@ module.exports.getGraphRevenueData = async (req, res) => {
       }
     ]);
 
+    const startOfLast7Days = new Date();
+    startOfLast7Days.setDate(startOfLast7Days.getDate() - 7);
+    startOfLast7Days.setHours(0, 0, 0, 0);
+
+    const revenueLast7Days = await order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: startOfLast7Days
+          },
+          $or: [
+            { payment_method: "Trực tiếp", order_status: "Đã hoàn thành" },
+            { payment_method: "ZaloPay", order_status: { $ne: "Chờ thanh toán" } },
+            { paid: true }
+          ]
+        }
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          totalRevenue: { $sum: "$total_price" }
+        }
+      },
+      {
+        $sort: { _id: 1 }
+      }
+    ]);
+
     const generateDateArray = (start, end) => {
       const dates = [];
       const currentDate = new Date(start);
@@ -244,11 +272,31 @@ module.exports.getGraphRevenueData = async (req, res) => {
       });
     };
 
+    const fillMissingDates = (data, dates) => {
+      const dateMap = dates.reduce((acc, date) => {
+        acc[date] = 0;
+        return acc;
+      }, {});
+
+      data.forEach(item => {
+        dateMap[item._id] = item.totalRevenue;
+      });
+
+      return Object.keys(dateMap).map(date => ({
+        _id: date,
+        totalRevenue: dateMap[date]
+      }));
+    };
+
     const dates = generateDateArray(startOfMonth, new Date());
+    const datesLast7Days = generateDateArray(startOfLast7Days, new Date());
+
     const revenueFilled = fillMissingDatesAndAccumulate(revenue, dates);
+    const revenueLast7DaysFilled = fillMissingDates(revenueLast7Days, datesLast7Days);
 
     const graphData = {
       revenue: revenueFilled,
+      revenueLast7Days: revenueLast7DaysFilled
     };
 
     res.status(200).json(graphData);
@@ -256,6 +304,7 @@ module.exports.getGraphRevenueData = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 module.exports.getGraphPetData = async (req, res) => {
   try {
     const petsChuaCoChu = await pet.countDocuments({ adoptStatus: "Chưa có chủ" });

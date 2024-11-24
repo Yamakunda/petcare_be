@@ -110,7 +110,7 @@ module.exports.changePassword = async (req, res) => {
 module.exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
-    const account = await Account.findOne({ email });
+    var account = await Account.findOne({ email });
     if (!account) {
       return res.status(404).json({ error: "Account not found" });
     }
