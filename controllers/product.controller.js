@@ -25,12 +25,68 @@ module.exports.addProduct = async (req, res) => {
 
 module.exports.getListProductUser = async (req, res) => {
   try {
-    const products = await Product.find({status: "active"});
+    // const products = await Product.find({status: "active"});
+    const products = await Product.find();
     res.status(200).json({ products });
   } catch (error) {
     res.status(400).json({ error });
   }
 }
+module.exports.getProductIntro = async (req, res) => {
+  try {
+    const categories = [
+      "Nhà thú cưng",
+      "Đồ chơi cho thú cưng", 
+      "Thức ăn thú cưng",
+      "Đồ dùng tắm gội",
+      "Đồ dùng thú y",
+      "Đồ dùng vệ sinh"
+    ];
+
+    // Get top products by category
+    const topProductsByCategory = await Promise.all(
+      categories.map(async (category) => {
+        const products = await Product.aggregate([
+          {
+            $match: {
+              category: category
+            }
+          },
+          {
+            $sort: { rating: -1 }
+          },
+          {
+            $limit: 5
+          }
+        ]);
+        return { category, products };
+      })
+    );
+
+    // Get overall top products
+    const topProductOverall = await Product.aggregate([
+      {
+        $sort: { rating: -1 }
+      },
+      {
+        $limit: 5
+      }
+    ]);
+
+    // Format response
+    const response = {
+      ...topProductsByCategory.reduce((acc, { category, products }) => ({
+        ...acc,
+        [category]: products
+      }), {}),
+      overall: topProductOverall
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 module.exports.getListProduct = async (req, res) => {
   try {
     const products = await Product.find();

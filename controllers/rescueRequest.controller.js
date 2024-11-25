@@ -79,10 +79,10 @@ module.exports.deleteRescue = async (req, res) => {
         return res.status(404).json({ message: 'Rescue not found' });
       }
       //retrieve current image ID
-      const imgId = rescue_curr.image.public_id;
-      if (imgId[0] != "null" && imgId[0] != "") {
-        await imagekit.deleteFile(imgId);
-      }
+      // const imgId = rescue_curr.image.public_id;
+      // if (imgId[0] != "null" && imgId[0] != "") {
+      //   await imagekit.deleteFile(imgId);
+      // }
       // Find the rescue by ID and delete it
       const rescue = await RescueRequest.findByIdAndDelete(rescueId);
       

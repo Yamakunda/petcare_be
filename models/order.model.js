@@ -87,6 +87,12 @@ const orderSchema = new mongoose.Schema(
   }
 );
 
+// orderSchema.pre('save', function (next) {
+//   const offset = 7 * 60 * 60 * 1000; // GMT+7 offset in milliseconds
+//   this.createdAt = new Date(this.createdAt.getTime() + offset);
+//   next();
+// });
+
 const Order = mongoose.model("Order", orderSchema, "orders");
 
 module.exports = Order ;
