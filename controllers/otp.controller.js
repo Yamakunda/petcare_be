@@ -35,6 +35,15 @@ module.exports.createOTP = async (req, res) => {
       subject: 'Mã OTP của BKPetCare',
       text: `Mã OTP của bạn là ${otp.otp}. Đừng chia sẻ mã này với bất kỳ ai khác. Mã này sẽ hết hạn sau 3 phút.`
     };
+    // const mailOptions = {
+    //   from: {
+    //     name: 'BKPetCare',
+    //     address: process.env.GMAIL
+    //   },
+    //   to: email,
+    //   subject: 'Mã OTP của BKPetCare',
+    //   text: `Mã OTP của bạn là ${otp.otp}. Đừng chia sẻ mã này với bất kỳ ai khác. Mã này sẽ hết hạn sau 3 phút.`
+    // };
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
