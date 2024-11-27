@@ -372,7 +372,7 @@ module.exports.getGraphRescueRequestData = async (req, res) => {
     const rescueRequestsByDay = await rescueRequest.aggregate([
       {
         $match: {
-          requestStatus: "Đang được yêu cầu",
+          requestStatus: "Chưa xử lý",
           updatedAt: {
             $gte: startOfMonth
           }
