@@ -15,7 +15,7 @@ const config = {
 module.exports.paymentZalo = async (req, res) => {
   const { total_price, order_id, payment_id } = req.body;
   const embed_data = {
-    redirecturl: "https://dacn-steel.vercel.app/Cart",
+    // redirecturl: "https://dacn-steel.vercel.app/Cart",
   };
 
   const items = [{}];
