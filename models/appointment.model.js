@@ -87,7 +87,7 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
       default: false,
     },
-    service: {
+    serviceList: {
       type: [String],
       required: true,
       default: [],
