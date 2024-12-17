@@ -22,12 +22,62 @@ module.exports.addProduct = async (req, res) => {
     res.status(400).json({ error });
   }
 };
-
 module.exports.getListProductUser = async (req, res) => {
   try {
-    // const products = await Product.find({status: "active"});
-    const products = await Product.find();
-    res.status(200).json({ products });
+    console.log(req.query);
+    var brandlist = []
+    const page = parseInt(req.query.page) || 1;
+    const itemsPerPage = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * itemsPerPage;
+    const { category, minPrice, maxPrice, sortBy, sortOrder, brand } = req.query;
+    const query = {};
+
+    // Build sort object
+    const sortOptions = {};
+    const validSortFields = ['name', 'price', 'discount_price'];
+    const validSortOrders = ['asc', 'desc'];
+    
+    if (validSortFields.includes(sortBy) && validSortOrders.includes(sortOrder)) {
+      sortOptions[sortBy] = sortOrder === 'asc' ? 1 : -1;
+    } 
+
+    if (category) {
+      query.category = category;
+    }
+    if (brand) {
+      query.brand = brand;
+    }
+
+    if (minPrice || maxPrice) {
+      query.discount_price = {};
+      if (minPrice) query.discount_price.$gte = parseInt(minPrice);
+      if (maxPrice) query.discount_price.$lte = parseInt(maxPrice);
+    }
+
+    const products = await Product.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(itemsPerPage);
+      
+    const totalProducts = await Product.countDocuments(query);
+    const totalPages = Math.ceil(totalProducts / itemsPerPage);
+    if(category){
+      brandlist = await Product.distinct('brand', {category: category});
+    }
+    res.status(200).json({ 
+      products,
+      pagination: {
+        currentPage: page,
+        totalProducts,
+        totalPages,
+        itemsPerPage
+      },
+      sort: {
+        sortBy: sortBy || 'name',
+        sortOrder: sortOrder || 'asc'
+      },
+      brandlist: brandlist
+    });
   } catch (error) {
     res.status(400).json({ error });
   }

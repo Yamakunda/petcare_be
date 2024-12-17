@@ -33,7 +33,7 @@ const petSchema = new mongoose.Schema(
     recieveDay: {
       type: Date,
       required: true,
-      default: Date.now,
+      default: Date.now(),
     },
     vaccinated: {
       type: String,
@@ -71,12 +71,12 @@ const petSchema = new mongoose.Schema(
     resquestDay: {
       type: Date,
       required: true,
-      default: Date.now,
+      default: Date.now(),
     },
     adoptDay: {
       type: Date,
       required: true,
-      default: Date.now,
+      default: Date.now(),
     },
     requestStatus: {
       type: String,
@@ -101,7 +101,7 @@ const petSchema = new mongoose.Schema(
     recieveDay: {
       type: Date,
       required: true,
-      default: Date.now,
+      default: Date.now(),
     },
     arriveDay: {
       type: Date,

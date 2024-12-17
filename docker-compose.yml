@@ -1,0 +1,20 @@
+# docker-compose.yml
+services:
+  api:
+    container_name: petcare-api
+    build: .
+    ports:
+      - "8080:8080"  # FORMAT: "HOST_PORT:CONTAINER_PORT"
+    environment:
+      - NODE_ENV=development
+      - PORT=8080
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
