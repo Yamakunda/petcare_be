@@ -64,7 +64,7 @@ const appointmentSchema = new mongoose.Schema(
     },
     service: {
       type: String,
-      required: true,
+      // required: true,
       default: "unknown",
     },
     status: {

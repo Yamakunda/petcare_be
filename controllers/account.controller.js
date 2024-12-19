@@ -109,18 +109,14 @@ module.exports.changePassword = async (req, res) => {
 };
 module.exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
-  console.log(email);
   try {
-    console.log(1);
     var account = await Account.findOne({ email });
     if (!account) {
       return res.status(404).json({ error: "Account not found" });
     }
-    console.log(2);
     const newpassword = generate.generateRandomNumber(8);
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newpassword, salt);
-    console.log(3);
     account = await Account.findByIdAndUpdate(account._id, {
       password: hashedPassword
     });
