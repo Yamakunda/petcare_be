@@ -145,6 +145,14 @@ module.exports.getListProduct = async (req, res) => {
     res.status(400).json({ error });
   }
 }
+module.exports.getListProductFilter = async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.status(200).json({ products });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+}
 module.exports.getProductById = async (req, res) => {
   const { id } = req.params;
   try {
